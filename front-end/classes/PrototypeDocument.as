@@ -8,7 +8,7 @@ public class PrototypeDocument extends MovieClip {
 			trace("PrototypeDocument was created")
 			this.gotoAndStop(1, "start");
 			startBtn.addEventListener(MouseEvent.CLICK, function ():void {
-									  gotoAndStop(1, "proj");
+									  gotoAndStop(1 , "proj");
 			});
 		}
 }
