@@ -1,5 +1,10 @@
 include 'modules:shared-classes',
 		'modules:shared-infrastructure',
-		'modules:shared-fms'
+		'modules:shared-fms',
 
+		'modules:module-core-asset',		
+		'modules:module-core',
+		'modules:module-web'
+
+		
 		
