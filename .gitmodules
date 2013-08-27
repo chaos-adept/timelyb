@@ -1,0 +1,3 @@
+[submodule "front-end/flash-based-application/buildSrc/gradlefx"]
+	path = front-end/flash-based-application/buildSrc/gradlefx
+	url = https://github.com/chaos-adept/GradleFx.git
