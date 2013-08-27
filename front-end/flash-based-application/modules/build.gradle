@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+	/*
+    dependencies {
+        classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.6.4'
+    }
+	*/
+}
+
+
+subprojects {
+	apply plugin: 'gradlefx'
+	apply plugin: 'ideafx'
+	apply plugin: 'flashbuilder'
+	
+	ext.ideaFxModuleSdkName = 'flex_sdk_4.6.0'
+	
+	playerVersion = '11.1'
+	
+	frameworkLinkage = 'merged' 
+	
+	flexHome = System.getenv()['FLEX_HOME']
+
+    ext.IOS_HOME =           "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
+    ext.IOS_SIMULATOR_HOME = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator6.1.sdk"
+
+
+    additionalCompilerOptions << '+configname=air'
+    //additionalCompilerOptions << '-load-config+=air-config.xml'
+	additionalCompilerOptions << '-default-background-color'
+	additionalCompilerOptions << '0x000000'
+
+	def workDir = project.project(':modules').projectDir
+	
+	dependencies {
+		//merged files('../shared-libs/as3commons-lang-0.3.6.swc', 'libs/b.jar')
+		external fileTree(dir: "${workDir}/shared-ane", include: '*.swc')
+		merged fileTree(dir: "${workDir}/shared-libs", include: '*.swc')
+		merged fileTree(dir: "${workDir}/shared-movies", include: '*.swc')
+		merged fileTree(dir: "${workDir}/shared-movies/market", include: '*.swc') //todo extract to android related config
+	}	
+
+	air {
+			keystore        "${workDir}/cert/bi-lingvo-zagadki.p12"
+			storepass       'bi-lingvo-zagadki'
+
+			includeFileTrees = [
+					fileTree(dir: './..', include: 'icons/**/*.*'),
+					fileTree(dir: './..', include: 'images/**/*.*'),
+					fileTree(dir: './..', include: 'sounds/**/*.*')
+			]
+	}
+	
+	airMobile {
+		extensionDir "${workDir}/shared-ane"
+		platformSdk System.getenv()['ANDROID_HOME']
+		targetDevice "HT164T402188"
+	}		
+	
+}

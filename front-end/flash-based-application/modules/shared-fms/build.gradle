@@ -1,0 +1,19 @@
+type = 'swc'
+
+//ssrcDirs = ['src']
+//frameworkLinkage = 'merged'
+
+flexUnit {
+            includes = ['**/*Test.as'] //will include all actionscript classes which start with 'Test'
+}
+
+testDirs = ['src/test/actionscript']
+testResourceDirs = ['src/test/testresources']
+
+def flexunitHome = '../shared-test-libs'
+dependencies {
+	internal project(':modules:shared-infrastructure')
+    merged files("${flexunitHome}/flexunit-4.1.0-8-flex_4.1.0.16076.swc",
+            "${flexunitHome}/hamcrest-as3-flex-1.1.3.swc",
+            "${flexunitHome}/flexunit-uilistener-4.1.0-8-4.1.0.16076.swc")
+}

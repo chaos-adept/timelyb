@@ -1,0 +1,16 @@
+buildscript {
+/*
+    repositories {
+        mavenLocal()
+		mavenCentral()
+    }
+	dependencies {
+		classpath group: 'commons-lang', name: 'commons-lang', version: '2.6'
+		classpath group: 'commons-io', name: 'commons-io', version: '2.1'
+		classpath fileTree(dir: 'libs/tool', include: '*.jar')		
+    }
+*/
+}
+
+subprojects {
+}

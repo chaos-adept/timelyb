@@ -1,0 +1,31 @@
+type = 'swc'
+
+apply plugin : 'resourceembedfx'
+
+embed {
+    embedRefClass {
+        source fileTree(dir: 'sounds', include: 'masl_01_*.mp3')
+        source fileTree(dir: 'sounds', include: 'BadRes.mp3')
+        source fileTree(dir: 'sounds', include: '*_level_varya.mp3')
+        name 'VesnaEmbedRefs'
+    }
+    embedRefClass {
+        source fileTree(dir: 'sounds', include: 'masl_05_*.mp3')
+        source fileTree(dir: 'sounds', include: 'BadRes.mp3')
+        source fileTree(dir: 'sounds', include: '*_level_varya.mp3')
+        name 'OneWordEmbedRefs'
+    }
+    embedRefClass {
+        source fileTree(dir: 'sounds', include: 'masl_03_*.mp3')
+        source fileTree(dir: 'sounds', include: 'BadRes.mp3')
+        source fileTree(dir: 'sounds', include: '*_level_varya.mp3')
+
+        name 'PoslovitsiEmbedRefs'
+    }
+}
+
+
+dependencies {
+    internal fileTree(dir: "${projectDir}/art-work", include: '*.swc')
+}
+	
