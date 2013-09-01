@@ -2,7 +2,7 @@ type = 'swc'
 
 dependencies {
     merged project(':modules:shared-classes')
-    include project(':modules:module-core-asset')
+    internal project(':modules:module-core-asset')
     merged project(':modules:shared-infrastructure')
     merged project(':modules:shared-fms')
 }
