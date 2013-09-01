@@ -33,6 +33,7 @@ import insfrastructure.content.ISoundContentResolver;
 import scenes.ProjectScene;
 
 import scenes.SplashScene;
+import scenes.TimerScene;
 
 import utils.DictonaryUtils;
 
@@ -57,6 +58,7 @@ public class TimeLybDocument extends InitiableMovieClip {
 
         this.addEventListener(Cnst.EVENT_TYPE_GAME_FINISHED, handleEvent);
         this.addEventListener(Cnst.EVENT_TYPE_GAME_OVER, handleEvent);
+        this.addEventListener("showTimer", handleEvent);
 
         gameHolder = new GameHolder();
         addChild(gameHolder);
@@ -80,7 +82,10 @@ public class TimeLybDocument extends InitiableMovieClip {
                 .addActivateHandler(newSetSceneFn(SplashScene))
                 .addTransition(Cnst.EVENT_TYPE_GAME_FINISHED).toState("projectsState");
         stateMachine.state("projectsState")
-                .addActivateHandler(newSetSceneFn(ProjectScene));
+                .addActivateHandler(newSetSceneFn(ProjectScene))
+                .addTransition("showTimer").toState("timerState");
+        stateMachine.state("timerState")
+                .addActivateHandler(newSetSceneFn(TimerScene));
         stateMachine.start();
     }
 
