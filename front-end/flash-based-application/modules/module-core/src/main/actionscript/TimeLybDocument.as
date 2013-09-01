@@ -30,6 +30,8 @@ import insfrastructure.content.IByteArrayDataLoader;
 import insfrastructure.content.IImageContentResolver;
 import insfrastructure.content.ISoundContentResolver;
 
+import scenes.ProjectScene;
+
 import scenes.SplashScene;
 
 import utils.DictonaryUtils;
@@ -53,6 +55,9 @@ public class TimeLybDocument extends InitiableMovieClip {
         Context.instance.register(IByteArrayDataLoader, new EmbedByteArrayLoader(keys));
         Context.instance.register(IGameSettings, GameSettingsImpl.newMarketSettings());
 
+        this.addEventListener(Cnst.EVENT_TYPE_GAME_FINISHED, handleEvent);
+        this.addEventListener(Cnst.EVENT_TYPE_GAME_OVER, handleEvent);
+
         gameHolder = new GameHolder();
         addChild(gameHolder);
     }
@@ -71,8 +76,11 @@ public class TimeLybDocument extends InitiableMovieClip {
 
     private function initFSM():void {
         stateMachine = new FiniteStateMachine();
-        stateMachine.state("menu")
+        stateMachine.state("splashState")
                 .addActivateHandler(newSetSceneFn(SplashScene))
+                .addTransition(Cnst.EVENT_TYPE_GAME_FINISHED).toState("projectsState");
+        stateMachine.state("projectsState")
+                .addActivateHandler(newSetSceneFn(ProjectScene));
         stateMachine.start();
     }
 
