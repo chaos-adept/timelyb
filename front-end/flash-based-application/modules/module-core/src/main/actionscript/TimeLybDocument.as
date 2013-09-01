@@ -30,6 +30,8 @@ import insfrastructure.content.IByteArrayDataLoader;
 import insfrastructure.content.IImageContentResolver;
 import insfrastructure.content.ISoundContentResolver;
 
+import scenes.ActivitesScene;
+
 import scenes.ProjectScene;
 
 import scenes.SplashScene;
@@ -59,6 +61,7 @@ public class TimeLybDocument extends InitiableMovieClip {
         this.addEventListener(Cnst.EVENT_TYPE_GAME_FINISHED, handleEvent);
         this.addEventListener(Cnst.EVENT_TYPE_GAME_OVER, handleEvent);
         this.addEventListener("showTimer", handleEvent);
+        this.addEventListener("showActives", handleEvent);
 
         gameHolder = new GameHolder();
         addChild(gameHolder);
@@ -83,9 +86,14 @@ public class TimeLybDocument extends InitiableMovieClip {
                 .addTransition(Cnst.EVENT_TYPE_GAME_FINISHED).toState("projectsState");
         stateMachine.state("projectsState")
                 .addActivateHandler(newSetSceneFn(ProjectScene))
-                .addTransition("showTimer").toState("timerState");
+                .addTransition("showTimer").toState("timerState")._from
+                .addTransition("showActives").toState("activitesState");
         stateMachine.state("timerState")
                 .addActivateHandler(newSetSceneFn(TimerScene));
+        stateMachine.state("activitesState")
+                .addActivateHandler(newSetSceneFn(ActivitesScene));
+
+
         stateMachine.start();
     }
 

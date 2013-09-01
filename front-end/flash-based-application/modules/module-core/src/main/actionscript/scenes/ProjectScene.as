@@ -18,6 +18,11 @@ public class ProjectScene extends BaseGame {
         addChild(projectSmb);
 
         projectSmb.btn1.addEventListener(MouseEvent.MOUSE_DOWN, btn1ClickHandler);
+        projectSmb.activ.addEventListener(MouseEvent.MOUSE_DOWN, acitiviteClickHandler);
+    }
+
+    private function acitiviteClickHandler(event:MouseEvent):void {
+        dispatchEvent(new Event("showActives", true));
     }
 
     private function btn1ClickHandler(e:MouseEvent):void {
