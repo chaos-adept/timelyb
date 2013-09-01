@@ -1,4 +1,4 @@
-type = 'swf'
+type = 'swc'
 
 dependencies {
     merged project(':modules:shared-classes')
