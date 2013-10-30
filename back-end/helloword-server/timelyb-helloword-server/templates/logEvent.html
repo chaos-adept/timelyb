@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+ <head>
+    <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  </head>
+  <body>
+    <h1>Hi {{ nickName }}</h1>
+    <form action="/logEvent" method="post">
+      <div><input name="activity" type="text" placeholder="activity"/></div>
+      <div><input id="startTimeInput" name="startTime" type="time"/><button id="checkInBtn">checkIn</button> </div>
+      <div><input id="endTimeInput" name="endTime" type="time"/><button id="checkOutBtn">checkOut</button></div>
+      <div><textarea name="comment" rows="3" cols="60" placeholder="comment"></textarea></div>
+      <div><input type="submit" value="Submit Event"></div>
+    </form>
+
+    <hr>
+
+
+  </body>
+<script>
+
+    function getCurrentTime() {
+        var date = new Date();
+        date.setMilliseconds(0);
+        return date;//date.getHours() + ":" + date.getMinutes()
+    }
+
+    function checkIn() {
+        var element = document.getElementById("startTimeInput");
+        element.valueAsDate = getCurrentTime();
+        //$("#startTimeInput").attr( "valueAsDate",  getCurrentTimeAsString() );
+    }
+
+    function checkOut() {
+        var element = document.getElementById("endTimeInput");
+        element.valueAsDate = getCurrentTime();
+    }
+
+    $("#checkInBtn").click(function( event ) {
+        checkIn();
+        event.preventDefault();
+    });
+
+    $("#checkOutBtn").click(function( event ) {
+        checkOut();
+        event.preventDefault();
+    });
+
+
+</script>
+</html>
+{% endautoescape %}
