@@ -1,6 +1,9 @@
 import os
 import urllib
 import cgi
+import datetime
+import model
+
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -31,9 +34,23 @@ class MainPage(webapp2.RequestHandler):
 class LogEventPage(webapp2.RequestHandler):
 
     def post(self):
-        self.response.write('<html><body>You wrote:<pre>')
-        self.response.write(cgi.escape(self.request.get('comment')))
-        self.response.write('</pre></body></html>')
+        # self.response.write('<html><body>You wrote:<pre>')
+        # self.response.write(cgi.escape(self.request.get('comment')))
+        # self.response.write('</pre></body></html>')
+        activity = self.request.get('activity')
+        value = float(self.request.get('value'))
+        comment = self.request.get('comment')
+        startDateTime = datetime.datetime.strptime( self.request.get('startTime'), "%Y-%m-%dT%H:%M:%S.%fZ" ) #dateutil.parser.parse(self.request.get('startTime'))
+        endDateTime = datetime.datetime.strptime( self.request.get('endTime'), "%Y-%m-%dT%H:%M:%S.%fZ" ) #dateutil.parser.parse(self.request.get('endTime'))
+        event = model.Event(
+            actor = users.get_current_user(), activity = activity,
+            comment = comment,
+            startTime = startDateTime, endTime = endDateTime,
+            value = value)
+
+
+        template = JINJA_ENVIRONMENT.get_template('/templates/logEventResult.html')
+        self.response.write(template.render({"event":event}))
 
 
 app = webapp2.WSGIApplication([

@@ -9,8 +9,11 @@
     <h1>Hi {{ nickName }}</h1>
     <form action="/logEvent" method="post">
       <div><input name="activity" type="text" placeholder="activity"/></div>
-      <div><input id="startTimeInput" name="startTime" type="time"/><button id="checkInBtn">checkIn</button> </div>
-      <div><input id="endTimeInput" name="endTime" type="time"/><button id="checkOutBtn">checkOut</button></div>
+      <div><input id="startTimeInput" type="text"/><button id="checkInBtn">checkIn</button> </div>
+      <div><input id="endTimeInput" type="text"/><button id="checkOutBtn">checkOut</button></div>
+      <div><input id="valueInput" name="value" type="text" value="1"/></div>
+      <input id="startTimeIsoInput" name="startTime" type="text"/>
+      <input id="endTimeIsoInput" name="endTime" type="text"/>
       <div><textarea name="comment" rows="3" cols="60" placeholder="comment"></textarea></div>
       <div><input type="submit" value="Submit Event"></div>
     </form>
@@ -20,22 +23,25 @@
 
   </body>
 <script>
+    var startDate, endDate;
+
+
 
     function getCurrentTime() {
         var date = new Date();
-        date.setMilliseconds(0);
-        return date;//date.getHours() + ":" + date.getMinutes()
+        return date.toLocaleTimeString();
     }
 
     function checkIn() {
-        var element = document.getElementById("startTimeInput");
-        element.valueAsDate = getCurrentTime();
-        //$("#startTimeInput").attr( "valueAsDate",  getCurrentTimeAsString() );
+        startDate = new Date().toISOString();
+        $("#startTimeIsoInput").val( startDate);
+        $("#startTimeInput").val( getCurrentTime() );
     }
 
     function checkOut() {
-        var element = document.getElementById("endTimeInput");
-        element.valueAsDate = getCurrentTime();
+        endDate = new Date().toISOString();
+        $("#endTimeIsoInput").val(endDate);
+        $("#endTimeInput").val( getCurrentTime() );
     }
 
     $("#checkInBtn").click(function( event ) {
