@@ -9,7 +9,7 @@
 	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
   </head>
   <body>
-    <div data-role="page">
+    <div data-role="page" id="logEventPage">
         <div data-role="header">
             <h1>My Title</h1>
         </div><!-- /header -->
@@ -17,7 +17,7 @@
 
             <h1>Hi {{ nickName }}</h1>
                 <form action="/logEvent" method="post">
-                  <input name="activity" type="text" placeholder="activity"/>
+                  <input id="activityInput" name="activity" type="text" placeholder="activity"/>
                                   <hr>
                     <div data-role="controlgroup">
                   <span id="startTimeInput" /><input type="button" id="checkInBtn" value="checkIn"/>
@@ -27,7 +27,7 @@
                   <input id="valueInput" name="value" type="text" value="1"/>
                   <input id="startTimeIsoInput" name="startTime" type="hidden"/>
                   <input id="endTimeIsoInput" name="endTime" type="hidden"/>
-                  <input name="comment" type="text" placeholder="comment"/>
+                  <input id="commentInput" name="comment" type="text" placeholder="comment"/>
                   <div><input id="submitBtn" type="submit" value="Submit Event"></div>
                 </form>
 
@@ -43,10 +43,18 @@
     var startDate, endDate;
 
     jQuery(document).ready(function() {
-        $('#checkOutBtn').button('disable');
-        $('#submitBtn').button('disable');
     });
 
+    $(document).on("pagebeforeshow", "#logEventPage", function() {
+        initPage();
+    });
+
+    function initPage() {
+        $('#checkInBtn').button('enable');
+        $('#checkOutBtn').button('disable');
+        $('#submitBtn').button('disable');
+        $('#commentInput').val('');
+    }
 
 
     function getCurrentTime() {
