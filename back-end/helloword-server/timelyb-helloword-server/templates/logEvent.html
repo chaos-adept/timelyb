@@ -3,7 +3,7 @@
 <html>
  <head class="ui-mobile">
 {#    <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />#}
-     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="http://jquerymobile.com/demos/1.2.0/css/themes/default/jquery.mobile-1.2.0.css" rel="stylesheet">
 	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
@@ -16,38 +16,70 @@
         <div data-role="content">
 
             <h1>Hi {{ nickName }}</h1>
-                <form action="/logEvent" method="post">
+                <form id="submitEventForm" action="/service/event.add" method="post">
+
+                </form>
+
                   <input id="activityInput" name="activity" type="text" placeholder="activity"/>
-                                  <hr>
-                    <div data-role="controlgroup">
-                  <span id="startTimeInput" /><input type="button" id="checkInBtn" value="checkIn"/>
-                  <span id="endTimeInput" /><input type="button" value="checkOut" id="checkOutBtn"/>
-                    </div>
-                                    <hr>
                   <input id="valueInput" name="value" type="text" value="1"/>
                   <input id="startTimeIsoInput" name="startTime" type="hidden"/>
                   <input id="endTimeIsoInput" name="endTime" type="hidden"/>
                   <input id="commentInput" name="comment" type="text" placeholder="comment"/>
-                  <div><input id="submitBtn" type="submit" value="Submit Event"></div>
-                </form>
+
+                    <div data-role="controlgroup">
+                      <span id="startTimeInput" /><button data-role="button" id="checkInBtn">checkIn</button>
+                      <span id="endTimeInput" /><button data-role="button" id="checkOutBtn">checkOut</button>
+                    </div>
+
+                    <div><input id="submitBtn" type="submit" value="Submit Event"></div>
 
                 <hr>
         </div>
+
+    <a href="#popupAlert" data-rel="popup">Open Popup</a>
+
+
+        <div data-role="footer">
+            <h4>Page Footer</h4>
+        </div><!-- /footer -->
     </div>
-	<div data-role="footer">
-		<h4>Page Footer</h4>
-	</div><!-- /footer -->
+
+    <div data-role="page" data-url="pageEventSubmitResultPagePopup" id="pageEventSubmitResultPage" data-add-back-btn="true">
+        <div data-role="header" >
+               <h1>My Title</h1>
+        </div>
+        <div data-role="content">
+                        event logged
+        </div>
+        <div data-role="footer">
+
+        </div>
+    </div>
+
+
+    <div data-rel="popup" id="popupAlert">
+        <div id="popupAlertContent">
+        <p>This is a completely basic popup, no options set.<p>
+        </div>
+    </div>
 
   </body>
 <script>
     var startDate, endDate;
 
     jQuery(document).ready(function() {
+
+        $("#popupAlert").popup()
     });
 
     $(document).on("pagebeforeshow", "#logEventPage", function() {
         initPage();
     });
+
+    function alert(msg) {
+        $("#popupAlertContent").html(msg);
+        $("#popupAlert").popup().popup( "open" );
+    }
 
     function initPage() {
         $('#checkInBtn').button('enable');
@@ -88,6 +120,31 @@
         checkOut();
         $('#submitBtn').button('enable');
         event.preventDefault();
+    });
+
+    $("#submitBtn").click(function() {
+        console.log("submit");
+
+        $.ajax({
+            url     : "/service/event.add",
+            contentType: 'application/json; charset=utf-8',
+            type    : "POST",
+            dataType: 'json',
+            data    :  JSON.stringify({
+                        activity: $("#activityInput").val(),
+                        comment: $("#commentInput").val(),
+                        value: $("#valueInput").val(),
+                        startTime: startDate,
+                        endTime: endDate
+            }),
+            success : function( data ) {
+                        $.mobile.changePage('#pageEventSubmitResultPagePopup');
+            },
+            error   : function( xhr, err ) {
+                         alert(err);
+            }
+        });
+        return false;
     });
 
 
