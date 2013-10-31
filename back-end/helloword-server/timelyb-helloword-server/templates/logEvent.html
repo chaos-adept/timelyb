@@ -1,29 +1,51 @@
 <!DOCTYPE html>
 {% autoescape true %}
 <html>
- <head>
-    <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />
-    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+ <head class="ui-mobile">
+{#    <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />#}
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://jquerymobile.com/demos/1.2.0/css/themes/default/jquery.mobile-1.2.0.css" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
   </head>
   <body>
-    <h1>Hi {{ nickName }}</h1>
-    <form action="/logEvent" method="post">
-      <div><input name="activity" type="text" placeholder="activity"/></div>
-      <div><input id="startTimeInput" type="text"/><button id="checkInBtn">checkIn</button> </div>
-      <div><input id="endTimeInput" type="text"/><button id="checkOutBtn">checkOut</button></div>
-      <div><input id="valueInput" name="value" type="text" value="1"/></div>
-      <input id="startTimeIsoInput" name="startTime" type="text"/>
-      <input id="endTimeIsoInput" name="endTime" type="text"/>
-      <div><textarea name="comment" rows="3" cols="60" placeholder="comment"></textarea></div>
-      <div><input type="submit" value="Submit Event"></div>
-    </form>
+    <div data-role="page">
+        <div data-role="header">
+            <h1>My Title</h1>
+        </div><!-- /header -->
+        <div data-role="content">
 
-    <hr>
+            <h1>Hi {{ nickName }}</h1>
+                <form action="/logEvent" method="post">
+                  <input name="activity" type="text" placeholder="activity"/>
+                                  <hr>
+                    <div data-role="controlgroup">
+                  <span id="startTimeInput" /><input type="button" id="checkInBtn" value="checkIn"/>
+                  <span id="endTimeInput" /><input type="button" value="checkOut" id="checkOutBtn"/>
+                    </div>
+                                    <hr>
+                  <input id="valueInput" name="value" type="text" value="1"/>
+                  <input id="startTimeIsoInput" name="startTime" type="hidden"/>
+                  <input id="endTimeIsoInput" name="endTime" type="hidden"/>
+                  <input name="comment" type="text" placeholder="comment"/>
+                  <div><input id="submitBtn" type="submit" value="Submit Event"></div>
+                </form>
 
+                <hr>
+        </div>
+    </div>
+	<div data-role="footer">
+		<h4>Page Footer</h4>
+	</div><!-- /footer -->
 
   </body>
 <script>
     var startDate, endDate;
+
+    jQuery(document).ready(function() {
+        $('#checkOutBtn').button('disable');
+        $('#submitBtn').button('disable');
+    });
 
 
 
@@ -36,12 +58,17 @@
         startDate = new Date().toISOString();
         $("#startTimeIsoInput").val( startDate);
         $("#startTimeInput").val( getCurrentTime() );
+        $('#checkInBtn').button('disable');
+        $('#checkOutBtn').button('enable');
     }
 
     function checkOut() {
         endDate = new Date().toISOString();
         $("#endTimeIsoInput").val(endDate);
         $("#endTimeInput").val( getCurrentTime() );
+        $('#checkOutBtn').button('disable');
+        $('#submitBtn').button('disable');
+
     }
 
     $("#checkInBtn").click(function( event ) {
@@ -51,6 +78,7 @@
 
     $("#checkOutBtn").click(function( event ) {
         checkOut();
+        $('#submitBtn').button('enable');
         event.preventDefault();
     });
 
