@@ -60,8 +60,8 @@ class EventService(remote.Service):
                 ndb.AND(
                     Event.actor == users.get_current_user(),
                     Event.endTime >=  datetime.datetime.now() - datetime.timedelta(days=14)),
-           projection=[Event.activity], distinct=True)
-        items = qry.map(nameToActivityMessage, limit = 20)
+           projection=[Event.activity, Event.endTime], distinct=True)
+        items = qry.map(nameToActivityMessage, limit = 40)
         response = ActivitiesResponse(items = items)
         return response
 
