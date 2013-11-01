@@ -12,9 +12,13 @@ handlers:
   static_dir: templates/stylesheets
 - url: /service/(.*)\.(.*)
   script: services.app
+- url: /pages
+  static_dir: static_pages
+  login: required
 
 - url: .*
   script: main.app
+  login: required
 
 libraries:
 - name: webapp2
