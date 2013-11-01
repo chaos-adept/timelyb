@@ -20,7 +20,12 @@
 
                 </form>
 
-                  <input id="activityInput" name="activity" type="text" placeholder="activity"/>
+
+                  <div data-role="controlgroup">
+                    <input id="activityInput" name="activity" type="text" placeholder="activity"/>
+                    <a href="#activityListPage" data-role="button">...</a>
+                  </div>
+
                   <input id="valueInput" name="value" type="text" value="1"/>
                   <input id="startTimeIsoInput" name="startTime" type="hidden"/>
                   <input id="endTimeIsoInput" name="endTime" type="hidden"/>
@@ -63,9 +68,39 @@
         </div>
     </div>
 
+    <div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
+        <div data-role="header" >
+               <h1>Activities</h1>
+        </div>
+        <div data-role="content">
+            <ul data-inset="true" data-role="listview" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+				<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="false" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li ui-li-has-alt ui-li-has-thumb ui-corner-top ui-btn-up-c"><div class="ui-btn-inner ui-li ui-li-has-alt ui-corner-top"><div class="ui-btn-text"><a href="javascript:selectActivity('верхний пресс')" class="ui-link-inherit">
+				<img src="images/album-bb.jpg" class="ui-li-thumb ui-corner-tl">
+				<h3 class="ui-li-heading">верхний пресс</h3>
+				<p class="ui-li-desc">Broken Bells</p>
+				</a></div></div><a data-transition="slideup" data-rel="dialog" href="lists-split-purchase.html" title="Purchase album
+			" class="ui-li-link-alt ui-btn ui-btn-up-c ui-btn-icon-notext ui-corner-tr" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-icon="false" data-iconpos="notext" data-theme="c"><span class="ui-btn-inner ui-corner-tr"><span class="ui-btn-text ui-corner-tr"></span><span data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-icon="arrow-r" data-iconpos="notext" data-theme="b" title="" class="ui-btn ui-btn-up-b ui-shadow ui-btn-corner-all ui-btn-icon-notext"><span class="ui-btn-inner ui-btn-corner-all ui-corner-tr"><span class="ui-btn-text ui-corner-tr"></span><span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></span></span></span></a></li>
+			<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="false" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li ui-li-has-alt ui-li-has-thumb ui-btn-up-c"><div class="ui-btn-inner ui-li ui-li-has-alt"><div class="ui-btn-text"><a href="index.html" class="ui-link-inherit">
+				<img src="images/album-hc.jpg" class="ui-li-thumb">
+				<h3 class="ui-li-heading">Warning</h3>
+			</a></div></div><a data-transition="slideup" data-rel="dialog" href="lists-split-purchase.html" title="Purchase album
+			" class="ui-li-link-alt ui-btn ui-btn-up-c ui-btn-icon-notext" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-icon="false" data-iconpos="notext" data-theme="c"><span class="ui-btn-inner"><span class="ui-btn-text"></span><span data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-icon="arrow-r" data-iconpos="notext" data-theme="b" title="" class="ui-btn ui-btn-up-b ui-shadow ui-btn-corner-all ui-btn-icon-notext"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></span></span></span></a></li>
+			<li data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="false" data-iconpos="right" data-theme="c" class="ui-btn ui-btn-icon-right ui-li ui-li-has-alt ui-li-has-thumb ui-corner-bottom ui-li-last ui-btn-up-c"><div class="ui-btn-inner ui-li ui-li-has-alt"><div class="ui-btn-text"><a href="index.html" class="ui-link-inherit">
+				<img src="images/album-p.jpg" class="ui-li-thumb ui-corner-bl">
+				<h3 class="ui-li-heading">Wolfgang Amadeus Phoenix</h3>
+				</a></div></div><a data-transition="slideup" data-rel="dialog" href="lists-split-purchase.html" title="Purchase album
+			" class="ui-li-link-alt ui-btn ui-btn-up-c ui-btn-icon-notext ui-corner-br" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="span" data-icon="false" data-iconpos="notext" data-theme="c"><span class="ui-btn-inner"><span class="ui-btn-text"></span><span data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-icon="arrow-r" data-iconpos="notext" data-theme="b" title="" class="ui-btn ui-btn-up-b ui-shadow ui-btn-corner-all ui-btn-icon-notext"><span class="ui-btn-inner ui-btn-corner-all"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span></span></span></span></a></li>
+			</ul>
+        </div>
+        <div data-role="footer">
+
+        </div>
+    </div>
+
   </body>
 <script>
     var startDate, endDate;
+    var selectedActivity = null;
 
     jQuery(document).ready(function() {
 
@@ -76,12 +111,26 @@
         initPage();
     });
 
+    $(document).on("pagebeforeshow", "#activityListPage", function() {
+        selectedActivity = null;
+    });
+
+    function selectActivity(activity) {
+        console.log("selectActivity" + activity);
+        selectedActivity = activity;
+        $.mobile.changePage("#logEventPage");
+        //$( "#activityInput").val(activity);
+    }
+
     function alert(msg) {
         $("#popupAlertContent").html(msg);
         $("#popupAlert").popup().popup( "open" );
     }
 
     function initPage() {
+
+        $( "#activityInput").val(selectedActivity ? selectedActivity : $( "#activityInput").val());
+
         $('#checkInBtn').button('enable');
         $('#checkOutBtn').button('disable');
         $('#submitBtn').button('disable');
