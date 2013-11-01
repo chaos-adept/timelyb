@@ -1,111 +1,112 @@
 <!DOCTYPE html>
 <html>
- <head class="ui-mobile">
-     <meta charset="utf-8">
+<head class="ui-mobile">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="http://jquerymobile.com/demos/1.2.0/css/themes/default/jquery.mobile-1.2.0.css" rel="stylesheet">
-	<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
-	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.js"></script>
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js" type="text/javascript"></script>
-  </head>
-  <body>
-    <div data-role="page" id="logEventPage">
-        <div data-role="header">
-            <h1>Log Event</h1>
-        </div><!-- /header -->
-        <div data-role="content">
-                  <div class="ui-grid-a">
-                    <div class="ui-block-a"><input id="activityInput" name="activity" type="text" placeholder="activity"/></div>
-                    <div class="ui-block-b"><a href="javascript:gotoSelectActivity()" data-role="button">...</a></div>
-                  </div>
-
-                  <input id="valueInput" name="value" type="text" value="1"/>
-                  <input id="startTimeIsoInput" name="startTime" type="hidden"/>
-                  <input id="endTimeIsoInput" name="endTime" type="hidden"/>
-                  <input id="commentInput" name="comment" type="text" placeholder="comment"/>
-
-                    <div data-role="controlgroup">
-                      <span id="startTimeInput" /><button data-role="button" id="checkInBtn">checkIn</button>
-                      <span id="endTimeInput" /><button data-role="button" id="checkOutBtn">checkOut</button>
-                    </div>
-
-                    <div><input id="submitBtn" type="submit" value="Submit Event"></div>
-
-                <hr>
+</head>
+<body>
+<div data-role="page" id="logEventPage">
+    <div data-role="header">
+        <h1>Log Event</h1>
+    </div>
+    <!-- /header -->
+    <div data-role="content">
+        <div class="ui-grid-a">
+            <div class="ui-block-a"><input id="activityInput" name="activity" type="text" placeholder="activity"/></div>
+            <div class="ui-block-b"><a href="javascript:gotoSelectActivity()" data-role="button">...</a></div>
         </div>
 
-    <a href="#popupAlert" data-rel="popup">Open Popup</a>
+        <input id="valueInput" name="value" type="text" value="1"/>
+        <input id="startTimeIsoInput" name="startTime" type="hidden"/>
+        <input id="endTimeIsoInput" name="endTime" type="hidden"/>
+        <input id="commentInput" name="comment" type="text" placeholder="comment"/>
 
+        <div data-role="controlgroup">
+            <span id="startTimeInput"/>
+            <button data-role="button" id="checkInBtn">checkIn</button>
+            <span id="endTimeInput"/>
+            <button data-role="button" id="checkOutBtn">checkOut</button>
+        </div>
 
-        <div data-role="footer">
-            <h4>Page Footer</h4>
-        </div><!-- /footer -->
+        <div><input id="submitBtn" type="submit" value="Submit Event"></div>
+
+        <hr>
     </div>
 
-    <div data-role="page" data-url="pageEventSubmitResultPagePopup" id="pageEventSubmitResultPage" data-add-back-btn="true">
-        <div data-role="header" >
-               <h1>My Title</h1>
-        </div>
-        <div data-role="content">
-                        event logged
-        </div>
-        <div data-role="footer">
+    <div data-role="footer">
+        <h4>Page Footer</h4>
+    </div>
+    <!-- /footer -->
+</div>
 
-        </div>
+<div data-role="page" data-url="pageEventSubmitResultPagePopup" id="pageEventSubmitResultPage" data-add-back-btn="true">
+    <div data-role="header">
+        <h1>My Title</h1>
+    </div>
+    <div data-role="content">
+        event logged
+    </div>
+    <div data-role="footer">
+
+    </div>
+</div>
+
+
+<div data-rel="popup" id="popupAlert">
+    <div id="popupAlertContent">
+        <p>This is a completely basic popup, no options set.
+
+        <p>
+    </div>
+</div>
+
+<div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
+    <div data-role="header">
+        <h1>Activities</h1>
+        <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
+    </div>
+    <div data-role="content">
+        <ul id="activitiesList" class="ui-listview" data-role="listview">
+            <li><a href="acura.html">Acura</a></li>
+        </ul>
     </div>
 
 
-    <div data-rel="popup" id="popupAlert">
-        <div id="popupAlertContent">
-        <p>This is a completely basic popup, no options set.<p>
-        </div>
+    <div data-role="footer">
+
     </div>
+</div>
 
-    <div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
-        <div data-role="header" >
-               <h1>Activities</h1>
-               <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
-        </div>
-        <div data-role="content">
-            <ul id="activitiesList" class="ui-listview" data-role="listview">
-                <li><a href="acura.html">Acura</a></li>
- 			</ul>
-        </div>
+<script id="activityItemTmpl" type="text/x-jquery-tmpl">
 
+    <li><a href="javascript:selectActivity('${name}')"
+           class="ui-link-inherit">
+        <!--- <img src="images/album-bb.jpg" class="ui-li-thumb ui-corner-tl"> -->
 
+        <h3 class="ui-li-heading">${name}</h3>
 
+        <!--                   <p class="ui-li-desc">${description}</p> -->
+    </a></li>
 
-        <div data-role="footer">
-
-        </div>
-    </div>
-
-           <script id="activityItemTmpl" type="text/x-jquery-tmpl">
-
-               <li><a href="javascript:selectActivity('${name}')"
-                      class="ui-link-inherit">
-                   <!--- <img src="images/album-bb.jpg" class="ui-li-thumb ui-corner-tl"> -->
-
-                   <h3 class="ui-li-heading">${name}</h3>
-
-<!--                   <p class="ui-li-desc">${description}</p> -->
-               </a></li>
-
-            </script>
+</script>
 <script>
     var startDate, endDate;
     var selectedActivity = null;
     var activities = null;//[{title:'Пресс', hint:''} , {title:'Пилон'}];
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function () {
 
         $("#popupAlert").popup()
     });
 
-    $(document).on("pagebeforeshow", "#logEventPage", function() {
+    $(document).on("pagebeforeshow", "#logEventPage", function () {
         initPage();
     });
 
-    $(document).on("pagebeforeshow", "#activityListPage", function() {
+    $(document).on("pagebeforeshow", "#activityListPage", function () {
         selectedActivity = null;
         refreshActivityListCtrl()
     });
@@ -124,13 +125,13 @@
         if (activities == null || justRefresh) {
             $.mobile.showPageLoadingMsg();
             $.ajax({
-                url     : "/service/event.activities",
+                url: "/service/event.activities",
                 contentType: 'application/json; charset=utf-8',
-                type    : "POST",
+                type: "POST",
                 dataType: 'json',
-                data    :  JSON.stringify({
+                data: JSON.stringify({
                 }),
-                success : function( data ) {
+                success: function (data) {
                     $.mobile.hidePageLoadingMsg();
                     activities = data.items;
                     if (justRefresh) {
@@ -139,7 +140,7 @@
                         $.mobile.changePage("#activityListPage");
                     }
                 },
-                error   : function( xhr, err ) {
+                error: function (xhr, err) {
                     $.mobile.hidePageLoadingMsg();
                     alert(err);
                 }
@@ -159,12 +160,12 @@
 
     function alert(msg) {
         $("#popupAlertContent").html(msg);
-        $("#popupAlert").popup().popup( "open" );
+        $("#popupAlert").popup().popup("open");
     }
 
     function initPage() {
 
-        $( "#activityInput").val(selectedActivity ? selectedActivity : $( "#activityInput").val());
+        $("#activityInput").val(selectedActivity ? selectedActivity : $("#activityInput").val());
 
         $('#checkInBtn').button('enable');
         $('#checkOutBtn').button('disable');
@@ -180,8 +181,8 @@
 
     function checkIn() {
         startDate = new Date().toISOString();
-        $("#startTimeIsoInput").val( startDate);
-        $("#startTimeInput").val( getCurrentTime() );
+        $("#startTimeIsoInput").val(startDate);
+        $("#startTimeInput").val(getCurrentTime());
         $('#checkInBtn').button('disable');
         $('#checkOutBtn').button('enable');
     }
@@ -189,44 +190,44 @@
     function checkOut() {
         endDate = new Date().toISOString();
         $("#endTimeIsoInput").val(endDate);
-        $("#endTimeInput").val( getCurrentTime() );
+        $("#endTimeInput").val(getCurrentTime());
         $('#checkOutBtn').button('disable');
         $('#submitBtn').button('disable');
 
     }
 
-    $("#checkInBtn").click(function( event ) {
+    $("#checkInBtn").click(function (event) {
         checkIn();
         event.preventDefault();
     });
 
-    $("#checkOutBtn").click(function( event ) {
+    $("#checkOutBtn").click(function (event) {
         checkOut();
         $('#submitBtn').button('enable');
         event.preventDefault();
     });
 
-    $("#submitBtn").click(function() {
+    $("#submitBtn").click(function () {
         console.log("submit");
         $.mobile.showPageLoadingMsg();
         $.ajax({
-            url     : "/service/event.add",
+            url: "/service/event.add",
             contentType: 'application/json; charset=utf-8',
-            type    : "POST",
+            type: "POST",
             dataType: 'json',
-            data    :  JSON.stringify({
-                        activity: $("#activityInput").val(),
-                        comment: $("#commentInput").val(),
-                        value: $("#valueInput").val(),
-                        startTime: startDate,
-                        endTime: endDate
+            data: JSON.stringify({
+                activity: $("#activityInput").val(),
+                comment: $("#commentInput").val(),
+                value: $("#valueInput").val(),
+                startTime: startDate,
+                endTime: endDate
             }),
-            success : function( data ) {
+            success: function (data) {
                 $.mobile.hidePageLoadingMsg();
                 initPage();
                 //$.mobile.changePage('#pageEventSubmitResultPagePopup');
             },
-            error   : function( xhr, err ) {
+            error: function (xhr, err) {
                 $.mobile.hidePageLoadingMsg();
                 alert(err);
             }
@@ -237,6 +238,6 @@
 
 </script>
 
-  </body>
+</body>
 
 </html>
