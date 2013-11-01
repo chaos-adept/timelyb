@@ -2,7 +2,6 @@
 <html>
  <head class="ui-mobile">
      <meta charset="utf-8">
-{#    <link type="text/css" rel="stylesheet" href="stylesheets/main.css" />#}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="http://jquerymobile.com/demos/1.2.0/css/themes/default/jquery.mobile-1.2.0.css" rel="stylesheet">
 	<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
@@ -12,19 +11,12 @@
   <body>
     <div data-role="page" id="logEventPage">
         <div data-role="header">
-            <h1>My Title</h1>
+            <h1>Log Event</h1>
         </div><!-- /header -->
         <div data-role="content">
-
-            <h1>Hi {{ nickName }}</h1>
-                <form id="submitEventForm" action="/service/event.add" method="post">
-
-                </form>
-
-
-                  <div data-role="controlgroup">
-                    <input id="activityInput" name="activity" type="text" placeholder="activity"/>
-                    <a href="#activityListPage" data-role="button">...</a>
+                  <div class="ui-grid-a">
+                    <div class="ui-block-a"><input id="activityInput" name="activity" type="text" placeholder="activity"/></div>
+                    <div class="ui-block-b"><a href="javascript:gotoSelectActivity()" data-role="button">...</a></div>
                   </div>
 
                   <input id="valueInput" name="value" type="text" value="1"/>
@@ -72,6 +64,7 @@
     <div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
         <div data-role="header" >
                <h1>Activities</h1>
+               <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
         </div>
         <div data-role="content">
             <ul id="activitiesList" class="ui-listview" data-role="listview">
@@ -89,20 +82,20 @@
 
            <script id="activityItemTmpl" type="text/x-jquery-tmpl">
 
-               <li><a href="javascript:selectActivity('${title}')"
+               <li><a href="javascript:selectActivity('${name}')"
                       class="ui-link-inherit">
-                   <img src="images/album-bb.jpg" class="ui-li-thumb ui-corner-tl">
+                   <!--- <img src="images/album-bb.jpg" class="ui-li-thumb ui-corner-tl"> -->
 
-                   <h3 class="ui-li-heading">${title}</h3>
+                   <h3 class="ui-li-heading">${name}</h3>
 
-                   <p class="ui-li-desc">${hint}</p>
+<!--                   <p class="ui-li-desc">${description}</p> -->
                </a></li>
 
             </script>
 <script>
     var startDate, endDate;
     var selectedActivity = null;
-    var activities = [{title:'Пресс', hint:''} , {title:'Пилон'}];
+    var activities = null;//[{title:'Пресс', hint:''} , {title:'Пилон'}];
     jQuery(document).ready(function() {
 
         $("#popupAlert").popup()
@@ -114,10 +107,48 @@
 
     $(document).on("pagebeforeshow", "#activityListPage", function() {
         selectedActivity = null;
+        refreshActivityListCtrl()
+    });
+
+    function refreshActivityListCtrl() {
         $("#activitiesList").empty();
         $('#activityItemTmpl').tmpl(activities).appendTo('#activitiesList');
         $("#activitiesList").listview('refresh');
-    });
+    }
+
+    function refreshActivityListPage() {
+        gotoSelectActivity(true);
+    }
+
+    function gotoSelectActivity(justRefresh) {
+        if (activities == null || justRefresh) {
+            $.mobile.showPageLoadingMsg();
+            $.ajax({
+                url     : "/service/event.activities",
+                contentType: 'application/json; charset=utf-8',
+                type    : "POST",
+                dataType: 'json',
+                data    :  JSON.stringify({
+                }),
+                success : function( data ) {
+                    $.mobile.hidePageLoadingMsg();
+                    activities = data.items;
+                    if (justRefresh) {
+                        refreshActivityListCtrl();
+                    } else {
+                        $.mobile.changePage("#activityListPage");
+                    }
+                },
+                error   : function( xhr, err ) {
+                    $.mobile.hidePageLoadingMsg();
+                    alert(err);
+                }
+            });
+        } else {
+            $.mobile.changePage("#activityListPage");
+        }
+
+    }
 
     function selectActivity(activity) {
         console.log("selectActivity" + activity);
@@ -177,7 +208,7 @@
 
     $("#submitBtn").click(function() {
         console.log("submit");
-
+        $.mobile.showPageLoadingMsg();
         $.ajax({
             url     : "/service/event.add",
             contentType: 'application/json; charset=utf-8',
@@ -191,10 +222,13 @@
                         endTime: endDate
             }),
             success : function( data ) {
-                        $.mobile.changePage('#pageEventSubmitResultPagePopup');
+                $.mobile.hidePageLoadingMsg();
+                initPage();
+                //$.mobile.changePage('#pageEventSubmitResultPagePopup');
             },
             error   : function( xhr, err ) {
-                         alert(err);
+                $.mobile.hidePageLoadingMsg();
+                alert(err);
             }
         });
         return false;
