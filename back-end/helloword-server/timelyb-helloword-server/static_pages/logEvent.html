@@ -70,10 +70,10 @@
     <div data-role="header">
         <h1>Activities </h1>
 
-        <a href="#addActivityPage" data-icon="add" class="ui-btn-right">Add</a>
+        <a href="javascript:addNewActivity()" data-icon="add" class="ui-btn-right">Add</a>
     </div>
     <div data-role="content">
-        <ul id="activitiesList" data-autodividers="true" data-filter="true" data-inset="true" class="ui-listview" data-role="listview">
+        <ul id="activitiesList" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-inset="true" data-split-theme="b" data-theme="a" data-split-icon="plus" data-role="listview">
             <li><a href="acura.html">Acura</a></li>
         </ul>
     </div>
@@ -92,6 +92,7 @@
         <a href="javascript:addActivity()" class="ui-btn-right" data-icon="check">Save</a>
     </div>
     <div data-role="content">
+        <input id="newActivityId" placeholder="activity name" type="hidden"/>
         <input id="newActivityName" placeholder="activity name"/>
         <input id="newActivityDescription" placeholder="activity description"/>
         <input id="newActivityTags" placeholder="activity tags: box run sun"/>
@@ -105,20 +106,42 @@
 
 <script id="activityItemTmpl" type="text/x-jquery-tmpl">
 
-    <li><a href="javascript:selectActivity('${code}')"
-           class="ui-link-inherit">
-<!--        <img src='${thumbUrl}' class="ui-li-thumb ui-corner-tl"/>-->
+    <li class="ui-btn ui-btn-icon-right ui-li ui-li-has-alt ui-li-has-thumb ui-first-child ui-btn-up-d" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="false" data-iconpos="right" data-theme="d">
 
-        <h3 class="ui-li-heading">${code}</h3>
-        <p class="ui-li-desc">${name}</p>
-        <p class="ui-li-desc">${tags}</p>
-    </a></li>
+        <div class="ui-btn-inner ui-li ui-li-has-alt">
+            <a href="javascript:selectActivity('${code}')"
+               class="ui-link-inherit">
+    <!--        <img src='${thumbUrl}' class="ui-li-thumb ui-corner-tl"/>-->
+
+            <h3 class="ui-li-heading">${code}</h3>
+            <p class="ui-li-desc">${name}</p>
+            <p class="ui-li-desc">${tags}</p>
+            </a>
+        </div>
+
+        <a class="ui-li-link-alt ui-btn ui-btn-icon-notext ui-btn-up-d" data-transition="slideup" data-rel="dialog"
+           href="javascript:editActivityItem('${id}')" title="Edit Item" data-corners="false" data-shadow="false"
+           data-iconshadow="true" data-wrapperels="span" data-icon="false" data-iconpos="notext" data-theme="d">
+            <span class="ui-btn-inner">
+            <span class="ui-btn-text"></span>
+            <span class="ui-btn ui-btn-up-d ui-shadow ui-btn-corner-all ui-btn-icon-notext" data-corners="true" data-shadow="true"
+                  data-iconshadow="true" data-wrapperels="span" data-icon="gear" data-iconpos="notext" data-theme="d" title="">
+            <span class="ui-btn-inner">
+            <span class="ui-btn-text"></span>
+            <span class="ui-icon ui-icon-gear ui-icon-shadow"> </span>
+            </span>
+            </span>
+            </span>
+        </a>
+
+    </li>
 
 </script>
 <script>
     var startDate, endDate;
     var selectedActivity = null;
     var activities = null;//[{title:'Пресс', hint:''} , {title:'Пилон'}];
+    var activitiesById = null;//[{title:'Пресс', hint:''} , {title:'Пилон'}];
     jQuery(document).ready(function () {
 
         $("#popupAlert").popup()
@@ -134,6 +157,15 @@
     });
 
 
+    function addNewActivity() {
+        $("#newActivityId").val('');
+        $("#newActivityName").val('');
+        $("#newActivityDescription").val('');
+        $("#newActivityThumbUrl").val('');
+        $("#newActivityTags").val('');
+        $.mobile.changePage("#addActivityPage");
+    }
+
     function addActivity() {
         console.log("submit");
         $.mobile.showPageLoadingMsg();
@@ -143,6 +175,7 @@
             type: "POST",
             dataType: 'json',
             data: JSON.stringify({
+                id: $("#newActivityId").val(),
                 code: $("#newActivityName").val(),
                 name: $("#newActivityDescription").val(),
                 thumbUrl: $("#newActivityThumbUrl").val(),
@@ -170,6 +203,12 @@
         gotoSelectActivity(true);
     }
 
+    function sortActivities(a, b) { // non-anonymous as you ordered...
+        return b.code < a.code ?  1 // if b should come earlier, push a to end
+             : b.code > a.code ? -1 // if b should come later, push a to begin
+             : 0;                   // a and b are equal
+    }
+
     function gotoSelectActivity(justRefresh) {
         if (activities == null || justRefresh) {
             $.mobile.showPageLoadingMsg();
@@ -182,7 +221,14 @@
                 }),
                 success: function (data) {
                     $.mobile.hidePageLoadingMsg();
+
                     activities = data.items;
+                    activitiesById = {};
+                    activities.forEach(function (activity){
+                        activitiesById[activity.id] = activity;
+                    });
+                    activities.sort();
+
                     if (justRefresh) {
                         refreshActivityListCtrl();
                     } else {
@@ -198,6 +244,17 @@
             $.mobile.changePage("#activityListPage");
         }
 
+    }
+
+    function editActivityItem(activityId) {
+        activity = activitiesById[activityId]
+
+        $("#newActivityId").val(activity.id);
+        $("#newActivityName").val(activity.code);
+        $("#newActivityDescription").val(activity.name);
+        $("#newActivityThumbUrl").val(activity.thumbUrl);
+        $("#newActivityTags").val(activity.tags.join(' '));
+        $.mobile.changePage("#addActivityPage");
     }
 
     function selectActivity(activity) {
@@ -258,7 +315,9 @@
 
     $("#submitBtn").click(function () {
         console.log("submit");
+
         $.mobile.showPageLoadingMsg();
+
         $.ajax({
             url: "/service/event.add",
             contentType: 'application/json; charset=utf-8',

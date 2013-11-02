@@ -1,3 +1,6 @@
+from google.appengine.ext.ndb import Key
+import update_events
+
 __author__ = 'WORKSATION'
 
 from protorpc import messages
@@ -7,7 +10,7 @@ from model import Event
 from model import Activity
 
 from google.appengine.api import users
-from google.appengine.ext import ndb
+from google.appengine.ext import ndb, deferred
 
 import datetime
 
@@ -27,10 +30,11 @@ class ActivitiesRequest(messages.Message):
     pass
 
 class ActivityItemMessage(messages.Message):
-    code = messages.StringField(1, required=True)
-    name = messages.StringField(2, required=True)
-    tags = messages.StringField(3, required=False, repeated=True)
-    thumbUrl = messages.StringField(4, required=False)
+    id = messages.StringField(1, required=False)
+    code = messages.StringField(2, required=True)
+    name = messages.StringField(3, required=True)
+    tags = messages.StringField(4, required=False, repeated=True)
+    thumbUrl = messages.StringField(5, required=False)
 
 class ActivitiesResponse(messages.Message):
     items = messages.MessageField(message_type=ActivityItemMessage, repeated=True, number=1)
@@ -41,7 +45,7 @@ def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
 
 def activityToMessage(activity):
-    return ActivityItemMessage(code = activity.code, name = activity.name, tags = activity.tags, thumbUrl = activity.thumbUrl)
+    return ActivityItemMessage(id = activity.key.urlsafe(), code = activity.code, name = activity.name, tags = activity.tags, thumbUrl = activity.thumbUrl)
 
 
 # Create the RPC service to exchange messages
@@ -69,22 +73,39 @@ class EventService(remote.Service):
     @remote.method(ActivityItemMessage, ActivityItemMessage)
     def addActivity(self, request):
         #try to find existed
-        activityIter = Activity.query(ndb.AND(
-                    Activity.actor == users.get_current_user(),
-                    Activity.code == request.code),
-                    ).iter(keys_only=True)
-        if (activityIter.has_next()):
-            activity = activityIter.next()
+
+        if (request.id):
+            activityKey = Key(urlsafe = request.id)
+            activity = activityKey.get()
+            oldActivityCode = activity.code
             activity.code = request.code
             activity.name = request.name
             activity.tags = request.tags
             activity.thumbUrl = request.thumbUrl
             activity.put()
+
+            #update existed items
+            deferred.defer(update_events.UpdateEventActivityName, oldActivityCode, request.code)
+
             return activityToMessage(activity)
         else:
-            activity = Activity(actor = users.get_current_user(), name = request.name, code = request.code, tags = request.tags, thumbUrl = request.thumbUrl)
-            activity.put()
-            return activityToMessage(activity)
+            activityIter = Activity.query(ndb.AND(
+                        Activity.actor == users.get_current_user(),
+                        Activity.code == request.code),
+                        ).iter(keys_only=True)
+
+            if (activityIter.has_next()):
+                activity = activityIter.next()
+                activity.code = request.code
+                activity.name = request.name
+                activity.tags = request.tags
+                activity.thumbUrl = request.thumbUrl
+                activity.put()
+                return activityToMessage(activity)
+            else:
+                activity = Activity(actor = users.get_current_user(), name = request.name, code = request.code, tags = request.tags, thumbUrl = request.thumbUrl)
+                activity.put()
+                return activityToMessage(activity)
 
 
 
