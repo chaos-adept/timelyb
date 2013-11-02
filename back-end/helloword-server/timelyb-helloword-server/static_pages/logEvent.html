@@ -17,10 +17,8 @@
     </div>
     <!-- /header -->
     <div data-role="content">
-        <div class="ui-grid-a">
-            <div class="ui-block-a"><input id="activityInput" name="activity" type="text" placeholder="activity"/></div>
-            <div class="ui-block-b"><a href="javascript:gotoSelectActivity()" data-role="button">...</a></div>
-        </div>
+         <a id="selectEventActivityCode" href="javascript:gotoSelectActivity()" data-role="button"><span id="selectEventActivityCodeLabel">...</span></a>
+
 
         <input id="valueInput" name="value" type="text" value="1"/>
         <input id="startTimeIsoInput" name="startTime" type="hidden"/>
@@ -28,9 +26,7 @@
         <input id="commentInput" name="comment" type="text" placeholder="comment"/>
 
         <div data-role="controlgroup">
-            <span id="startTimeInput"/>
             <button data-role="button" id="checkInBtn">checkIn</button>
-            <span id="endTimeInput"/>
             <button data-role="button" id="checkOutBtn">checkOut</button>
         </div>
 
@@ -109,7 +105,7 @@
     <li class="ui-btn ui-btn-icon-right ui-li ui-li-has-alt ui-li-has-thumb ui-first-child ui-btn-up-d" data-corners="false" data-shadow="false" data-iconshadow="true" data-wrapperels="div" data-icon="false" data-iconpos="right" data-theme="d">
 
         <div class="ui-btn-inner ui-li ui-li-has-alt">
-            <a href="javascript:selectActivity('${code}')"
+            <a href="javascript:selectActivity('${id}')"
                class="ui-link-inherit">
     <!--        <img src='${thumbUrl}' class="ui-li-thumb ui-corner-tl"/>-->
 
@@ -257,9 +253,9 @@
         $.mobile.changePage("#addActivityPage");
     }
 
-    function selectActivity(activity) {
-        console.log("selectActivity" + activity);
-        selectedActivity = activity;
+    function selectActivity(activityId) {
+        selectedActivity = activitiesById[activityId];
+        console.log("selectActivity " + selectedActivity.code);
         $.mobile.changePage("#logEventPage");
         //$( "#activityInput").val(activity);
     }
@@ -271,7 +267,7 @@
 
     function initPage() {
 
-        $("#activityInput").val(selectedActivity ? selectedActivity : $("#activityInput").val());
+        $("#selectEventActivityCodeLabel").html(selectedActivity ? selectedActivity.code : $("#selectEventActivityCode").html());
 
         $('#checkInBtn').button('enable');
         $('#checkOutBtn').button('disable');
