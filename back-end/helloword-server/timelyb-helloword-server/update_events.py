@@ -1,13 +1,12 @@
 __author__ = 'WORKSATION'
 import logging
 import model
-from google.appengine.ext import deferred
-from google.appengine.ext import db
+from google.appengine.ext import deferred, ndb
 
 BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 
-def UpdateEventActivityName(oldActivityCode, newActivityCode, cursor=None, num_updated=0):
-    query = model.Event.query(model.Event.activityCode == oldActivityCode)
+def UpdateEventActivityName(currentUser, oldActivityCode, newActivityCode, cursor=None, num_updated=0):
+    query = model.Event.query(ndb.AND(model.Event.activityCode == oldActivityCode, model.Event.actor == currentUser))
     if cursor:
         query.with_cursor(cursor)
 
@@ -17,13 +16,13 @@ def UpdateEventActivityName(oldActivityCode, newActivityCode, cursor=None, num_u
         to_put.append(event)
 
     if to_put:
-        db.put(to_put)
+        ndb.put(to_put)
         num_updated += len(to_put)
         logging.debug(
             'Put %d entities to Datastore for a total of %d',
             len(to_put), num_updated)
         deferred.defer(
-            UpdateEventActivityName, oldActivityCode, newActivityCode, cursor=query.cursor(), num_updated=num_updated)
+            UpdateEventActivityName, currentUser, oldActivityCode, newActivityCode, cursor=query.cursor(), num_updated=num_updated)
     else:
         logging.debug(
             'UpdateSchema complete with %d updates!', num_updated)
