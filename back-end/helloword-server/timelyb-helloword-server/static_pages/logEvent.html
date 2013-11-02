@@ -223,7 +223,7 @@
                     activities.forEach(function (activity){
                         activitiesById[activity.id] = activity;
                     });
-                    activities.sort();
+                    activities.sort(sortActivities);
 
                     if (justRefresh) {
                         refreshActivityListCtrl();
