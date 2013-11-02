@@ -49,8 +49,6 @@
             <button data-role="button" id="checkOutBtn">checkOut</button>
         </div>
 
-        <div><input id="submitBtn" type="submit" value="Submit Event"></div>
-
         <hr>
     </div>
 
@@ -278,40 +276,7 @@
     }
 
 
-    function getCurrentTime() {
-        var date = new Date();
-        return date.toLocaleTimeString();
-    }
-
-    function checkIn() {
-        startDate = new Date().toISOString();
-        $("#startTimeIsoInput").val(startDate);
-        $("#startTimeInput").val(getCurrentTime());
-        $('#checkInBtn').button('disable');
-        $('#checkOutBtn').button('enable');
-    }
-
-    function checkOut() {
-        endDate = new Date().toISOString();
-        $("#endTimeIsoInput").val(endDate);
-        $("#endTimeInput").val(getCurrentTime());
-        $('#checkOutBtn').button('disable');
-        $('#submitBtn').button('disable');
-
-    }
-
-    $("#checkInBtn").click(function (event) {
-        checkIn();
-        event.preventDefault();
-    });
-
-    $("#checkOutBtn").click(function (event) {
-        checkOut();
-        $('#submitBtn').button('enable');
-        event.preventDefault();
-    });
-
-    $("#submitBtn").click(function () {
+    function submitEvent() {
         console.log("submit");
 
         $.mobile.showPageLoadingMsg();
@@ -340,8 +305,40 @@
             }
         });
         return false;
+    }
+
+    function getCurrentTime() {
+        var date = new Date();
+        return date.toLocaleTimeString();
+    }
+
+    function checkIn() {
+        startDate = new Date().toISOString();
+        $("#startTimeIsoInput").val(startDate);
+        $("#startTimeInput").val(getCurrentTime());
+        $('#checkInBtn').button('disable');
+        $('#checkOutBtn').button('enable');
+    }
+
+    function checkOut() {
+        endDate = new Date().toISOString();
+        $("#endTimeIsoInput").val(endDate);
+        $("#endTimeInput").val(getCurrentTime());
+        $('#checkOutBtn').button('disable');
+        $('#submitBtn').button('disable');
+        submitEvent();
+    }
+
+    $("#checkInBtn").click(function (event) {
+        checkIn();
+        event.preventDefault();
     });
 
+    $("#checkOutBtn").click(function (event) {
+        checkOut();
+        $('#submitBtn').button('enable');
+        event.preventDefault();
+    });
 
 </script>
 
