@@ -21,4 +21,9 @@ indexes:
   properties:
   - name: actor
   - name: endTime
+
+- kind: Event
+  properties:
+  - name: actor
+  - name: endTime
   - name: activity

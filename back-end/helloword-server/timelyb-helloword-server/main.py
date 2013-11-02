@@ -2,8 +2,11 @@ import os
 import urllib
 import cgi
 import datetime
+from google.appengine.api.taskqueue import taskqueue
+from google.appengine.api.users import User
+import event_reports
 import model
-
+from google.appengine.ext import ndb, deferred
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -45,8 +48,20 @@ class LogEventPage(webapp2.RequestHandler):
         self.response.write(template.render({"event":event}))
 
 
+class ReportPage(webapp2.RequestHandler):
+    def get(self):
+        days = int( self.request.get('days') )
+
+        user = users.get_current_user()
+        email = user.email()
+                # Add the task to the default queue.
+        taskqueue.add(url='/reportWorker', method='GET', params={'email': email, 'days':days})
+
+        self.response.write('email is going to be sent at %s' % email)
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/report', ReportPage),
     ('/logEvent', LogEventPage)
 ], debug=True)
 
