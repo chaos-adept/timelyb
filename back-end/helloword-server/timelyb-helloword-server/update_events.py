@@ -16,7 +16,7 @@ def UpdateEventActivityName(currentUser, oldActivityCode, newActivityCode, curso
         to_put.append(event)
 
     if to_put:
-        ndb.put(to_put)
+        ndb.put_multi(to_put)
         num_updated += len(to_put)
         logging.debug(
             'Put %d entities to Datastore for a total of %d',

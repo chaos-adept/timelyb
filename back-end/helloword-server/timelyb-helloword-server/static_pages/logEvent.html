@@ -11,6 +11,25 @@
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js" type="text/javascript"></script>
 </head>
 <body>
+
+<div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
+    <div data-role="header">
+        <h1>Activities </h1>
+
+        <a href="javascript:addNewActivity()" data-icon="add" class="ui-btn-right">Add</a>
+    </div>
+    <div data-role="content">
+        <ul id="activitiesList" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-inset="true" data-filter="true" data-split-theme="b" data-theme="a" data-split-icon="plus" data-role="listview">
+        </ul>
+    </div>
+
+
+    <div data-role="footer">
+        <h1></h1>
+        <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
+    </div>
+</div>
+
 <div data-role="page" id="logEventPage">
     <div data-role="header">
         <h1>Log Event</h1>
@@ -61,26 +80,6 @@
         <p>
     </div>
 </div>
-
-<div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
-    <div data-role="header">
-        <h1>Activities </h1>
-
-        <a href="javascript:addNewActivity()" data-icon="add" class="ui-btn-right">Add</a>
-    </div>
-    <div data-role="content">
-        <ul id="activitiesList" class="ui-listview ui-listview-inset ui-corner-all ui-shadow" data-inset="true" data-filter="true" data-split-theme="b" data-theme="a" data-split-icon="plus" data-role="listview">
-            <li><a href="acura.html">Acura</a></li>
-        </ul>
-    </div>
-
-
-    <div data-role="footer">
-        <h1></h1>
-        <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
-    </div>
-</div>
-
 
 <div data-role="page" data-url="addActivityPage" id="addActivityPage" data-add-back-btn="true">
     <div data-role="header">
@@ -144,7 +143,7 @@
     });
 
     $(document).on("pagebeforeshow", "#logEventPage", function () {
-        initPage();
+        initLogEventPage();
     });
 
     $(document).on("pagebeforeshow", "#activityListPage", function () {
@@ -182,9 +181,10 @@
                 activities = null;
                 gotoSelectActivity();
             },
-            error: function (xhr, err) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $.mobile.hidePageLoadingMsg();
-                alert(err);
+                //alert(err);
+                 alert('request failed : ' + errorThrown);
             }
         });
     }
@@ -231,9 +231,10 @@
                         $.mobile.changePage("#activityListPage");
                     }
                 },
-                error: function (xhr, err) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     $.mobile.hidePageLoadingMsg();
-                    alert(err);
+                    //alert(err);
+                     alert('request failed : ' + errorThrown);
                 }
             });
         } else {
@@ -243,7 +244,7 @@
     }
 
     function editActivityItem(activityId) {
-        activity = activitiesById[activityId]
+        activity = activitiesById[activityId];
 
         $("#newActivityId").val(activity.id);
         $("#newActivityName").val(activity.code);
@@ -265,7 +266,7 @@
         $("#popupAlert").popup().popup("open");
     }
 
-    function initPage() {
+    function initLogEventPage() {
 
         $("#selectEventActivityCodeLabel").html(selectedActivity ? selectedActivity.code : $("#selectEventActivityCode").html());
 
@@ -273,6 +274,7 @@
         $('#checkOutBtn').button('disable');
         $('#submitBtn').button('disable');
         $('#commentInput').val('');
+        $('#checkInBtn').click();
     }
 
 
@@ -320,7 +322,7 @@
             type: "POST",
             dataType: 'json',
             data: JSON.stringify({
-                activity: $("#activityInput").val(),
+                activity: selectedActivity.code,
                 comment: $("#commentInput").val(),
                 value: $("#valueInput").val(),
                 startTime: startDate,
@@ -328,12 +330,13 @@
             }),
             success: function (data) {
                 $.mobile.hidePageLoadingMsg();
-                initPage();
-                //$.mobile.changePage('#pageEventSubmitResultPagePopup');
+                initLogEventPage();
+                $.mobile.changePage('#activityListPage');
             },
-            error: function (xhr, err) {
+            error: function (jqXHR, textStatus, errorThrown) {
                 $.mobile.hidePageLoadingMsg();
-                alert(err);
+                //alert(err);
+                 alert('request failed : ' + errorThrown);
             }
         });
         return false;
