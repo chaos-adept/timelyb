@@ -85,7 +85,8 @@ class EventService(remote.Service):
             activity.put()
 
             #update existed items
-            deferred.defer(update_events.UpdateEventActivityName, oldActivityCode, request.code)
+            if (oldActivityCode != request.code):
+                deferred.defer(update_events.UpdateEventActivityName, oldActivityCode, request.code)
 
             return activityToMessage(activity)
         else:
