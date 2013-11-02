@@ -10,6 +10,13 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Activity
+  properties:
+  - name: actor
+  - name: code
+  - name: name
+  - name: tags
+
 - kind: Event
   properties:
   - name: actor

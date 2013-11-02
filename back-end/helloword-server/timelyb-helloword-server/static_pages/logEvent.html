@@ -89,7 +89,7 @@
 <div data-role="page" data-url="addActivityPage" id="addActivityPage" data-add-back-btn="true">
     <div data-role="header">
         <h1>Add Activity</h1>
-        <a href="javascript:addActivity" class="ui-btn-right" data-icon="check">Save</a>
+        <a href="javascript:addActivity()" class="ui-btn-right" data-icon="check">Save</a>
     </div>
     <div data-role="content">
         <input id="newActivityName" placeholder="activity name"/>
@@ -105,13 +105,13 @@
 
 <script id="activityItemTmpl" type="text/x-jquery-tmpl">
 
-    <li><a href="javascript:selectActivity('${name}')"
+    <li><a href="javascript:selectActivity('${code}')"
            class="ui-link-inherit">
-        <!--- <img src="images/album-bb.jpg" class="ui-li-thumb ui-corner-tl"> -->
+        <img src='${thumbUrl}' class="ui-li-thumb ui-corner-tl"/>
 
         <h3 class="ui-li-heading">${name}</h3>
-
-        <!--                   <p class="ui-li-desc">${description}</p> -->
+        <p class="ui-li-desc">${code}</p>
+        <p class="ui-li-desc">${tags}</p>
     </a></li>
 
 </script>
@@ -132,6 +132,33 @@
         selectedActivity = null;
         refreshActivityListCtrl()
     });
+
+
+    function addActivity() {
+        console.log("submit");
+        $.mobile.showPageLoadingMsg();
+        $.ajax({
+            url: "/service/event.addActivity",
+            contentType: 'application/json; charset=utf-8',
+            type: "POST",
+            dataType: 'json',
+            data: JSON.stringify({
+                code: $("#newActivityName").val(),
+                name: $("#newActivityDescription").val(),
+                thumbUrl: $("#newActivityThumbUrl").val(),
+                tags: $("#newActivityTags").val().replace(',', ' ').split(' ')
+            }),
+            success: function (data) {
+                $.mobile.hidePageLoadingMsg();
+                activities = null;
+                gotoSelectActivity();
+            },
+            error: function (xhr, err) {
+                $.mobile.hidePageLoadingMsg();
+                alert(err);
+            }
+        });
+    }
 
     function refreshActivityListCtrl() {
         $("#activitiesList").empty();
