@@ -68,8 +68,9 @@
 
 <div data-role="page" data-url="activityListPage" id="activityListPage" data-add-back-btn="true">
     <div data-role="header">
-        <h1>Activities</h1>
-        <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
+        <h1>Activities </h1>
+
+        <a href="#addActivityPage" data-icon="add" class="ui-btn-right">Add</a>
     </div>
     <div data-role="content">
         <ul id="activitiesList" data-autodividers="true" data-filter="true" data-inset="true" class="ui-listview" data-role="listview">
@@ -79,9 +80,28 @@
 
 
     <div data-role="footer">
+        <h1></h1>
+        <a href="javascript:refreshActivityListPage()" data-icon="refresh" class="ui-btn-right">Refresh</a>
+    </div>
+</div>
+
+
+<div data-role="page" data-url="addActivityPage" id="addActivityPage" data-add-back-btn="true">
+    <div data-role="header">
+        <h1>Add Activity</h1>
+        <a href="javascript:addActivity" class="ui-btn-right" data-icon="check">Save</a>
+    </div>
+    <div data-role="content">
+        <input id="newActivityName" placeholder="activity name"/>
+        <input id="newActivityDescription" placeholder="activity description"/>
+        <input id="newActivityTags" placeholder="activity tags: box run sun"/>
+        <input id="newActivityThumbUrl" placeholder="activity thumb url"/>
+    </div>
+    <div data-role="footer">
 
     </div>
 </div>
+
 
 <script id="activityItemTmpl" type="text/x-jquery-tmpl">
 
