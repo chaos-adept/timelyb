@@ -12,7 +12,7 @@ BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 
 
 def activityToCvs(event):
-    return "%s, %s, %s, %s, %s" % (event.actor.nickname(), event.activityCode, event.startTime, event.endTime, event.value)
+    return "%s, %s, %s, %s, %s" % (event.actor.nickname(), event.activityCode, event.startTime.strftime("%Y-%m-%d %H:%M:%S"), event.endTime.strftime("%Y-%m-%d %H:%M:%S"), event.value)
 
 def SendEmailDailyReport(currentUser, email, fromDate):
 
