@@ -17,3 +17,4 @@ class Activity(ndb.Model):
     name = ndb.StringProperty(indexed=True, required=True)
     thumbUrl = ndb.StringProperty(indexed=False, required=False)
     tags = ndb.StringProperty(indexed=True, required=False, repeated=True)
+    defaultEventValue = ndb.FloatProperty(indexed=False, required=False)

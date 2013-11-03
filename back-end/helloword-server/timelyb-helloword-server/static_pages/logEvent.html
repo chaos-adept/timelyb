@@ -90,6 +90,7 @@
         <input id="newActivityDescription" placeholder="activity description"/>
         <input id="newActivityTags" placeholder="activity tags: box run sun"/>
         <input id="newActivityThumbUrl" placeholder="activity thumb url"/>
+        <input id="newActivityDefaultValue" placeholder="activity default value for new event"/>
     </div>
     <div data-role="footer">
 
@@ -155,6 +156,7 @@
         $("#newActivityName").val('');
         $("#newActivityDescription").val('');
         $("#newActivityThumbUrl").val('');
+        $("#newActivityDefaultValue").val('');
         $("#newActivityTags").val('');
         $.mobile.changePage("#addActivityPage");
     }
@@ -172,6 +174,7 @@
                 code: $("#newActivityName").val(),
                 name: $("#newActivityDescription").val(),
                 thumbUrl: $("#newActivityThumbUrl").val(),
+                defaultEventValue: $("#newActivityDefaultValue").val(),
                 tags: $("#newActivityTags").val().replace(',', ' ').split(' ')
             }),
             success: function (data) {
@@ -248,6 +251,7 @@
         $("#newActivityName").val(activity.code);
         $("#newActivityDescription").val(activity.name);
         $("#newActivityThumbUrl").val(activity.thumbUrl);
+        $("#newActivityDefaultValue").val(activity.defaultEventValue);
         $("#newActivityTags").val(activity.tags.join(' '));
         $.mobile.changePage("#addActivityPage");
     }
@@ -266,11 +270,12 @@
 
     function initLogEventPage() {
 
-        $("#selectEventActivityCodeLabel").html(selectedActivity ? selectedActivity.code : $("#selectEventActivityCode").html());
+        $("#selectEventActivityCodeLabel").html(selectedActivity.code);
 
         $('#checkInBtn').button('enable');
         $('#checkOutBtn').button('disable');
         $('#submitBtn').button('disable');
+        $('#valueInput').val(selectedActivity.defaultEventValue);
         $('#commentInput').val('');
         $('#checkInBtn').click();
     }

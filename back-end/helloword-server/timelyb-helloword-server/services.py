@@ -35,6 +35,7 @@ class ActivityItemMessage(messages.Message):
     name = messages.StringField(3, required=True)
     tags = messages.StringField(4, required=False, repeated=True)
     thumbUrl = messages.StringField(5, required=False)
+    defaultEventValue = messages.FloatField(6, required=False)
 
 class ActivitiesResponse(messages.Message):
     items = messages.MessageField(message_type=ActivityItemMessage, repeated=True, number=1)
@@ -45,7 +46,7 @@ def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
 
 def activityToMessage(activity):
-    return ActivityItemMessage(id = activity.key.urlsafe(), code = activity.code, name = activity.name, tags = activity.tags, thumbUrl = activity.thumbUrl)
+    return ActivityItemMessage(id = activity.key.urlsafe(), defaultEventValue = activity.defaultEventValue, code = activity.code, name = activity.name, tags = activity.tags, thumbUrl = activity.thumbUrl)
 
 
 # Create the RPC service to exchange messages
@@ -81,6 +82,7 @@ class EventService(remote.Service):
             activity.code = request.code
             activity.name = request.name
             activity.tags = request.tags
+            activity.defaultEventValue = request.defaultEventValue
             activity.thumbUrl = request.thumbUrl
             activity.put()
 
@@ -100,11 +102,12 @@ class EventService(remote.Service):
                 activity.code = request.code
                 activity.name = request.name
                 activity.tags = request.tags
+                activity.defaultEventValue = request.defaultEventValue
                 activity.thumbUrl = request.thumbUrl
                 activity.put()
                 return activityToMessage(activity)
             else:
-                activity = Activity(actor = users.get_current_user(), name = request.name, code = request.code, tags = request.tags, thumbUrl = request.thumbUrl)
+                activity = Activity(actor = users.get_current_user(), defaultEventValue = request.defaultEventValue, name = request.name, code = request.code, tags = request.tags, thumbUrl = request.thumbUrl)
                 activity.put()
                 return activityToMessage(activity)
 
