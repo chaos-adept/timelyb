@@ -35,7 +35,7 @@ def SendEmailDailyReport(currentUser, email, fromDate):
     query = Event.query(
             ndb.AND(
                 Event.actor == currentUser,
-                Event.endTime >=  fromDate))
+                Event.endTime >=  fromDate)).order(-Event.endTime)
 
     if cursor:
         query.with_cursor(cursor)

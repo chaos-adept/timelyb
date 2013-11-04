@@ -27,3 +27,9 @@ indexes:
   - name: actor
   - name: endTime
   - name: activity
+
+- kind: Event
+  properties:
+  - name: actor
+  - name: endTime
+    direction: desc
