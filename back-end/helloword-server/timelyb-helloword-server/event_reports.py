@@ -12,7 +12,11 @@ BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 
 
 def formatTimeDelta(delta):
-    return str(delta)
+    hours, remainder = divmod(delta.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # Formatted only for hours and minutes as requested
+    return '%s:%s:%s' % (hours, minutes, seconds)
 
 def dateToStr(date):
     return date.strftime("%Y-%m-%d %H:%M:%S")
@@ -35,7 +39,7 @@ def SendEmailDailyReport(currentUser, email, fromDate):
     query = Event.query(
             ndb.AND(
                 Event.actor == currentUser,
-                Event.endTime >=  fromDate)).order(-Event.endTime)
+                Event.endTime >=  fromDate)).order(Event.endTime)
 
     if cursor:
         query.with_cursor(cursor)
