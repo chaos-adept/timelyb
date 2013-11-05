@@ -30,9 +30,10 @@
     </div>
 </div>
 
-<div data-role="page" id="logEventPage">
-    <div data-role="header">
+<div data-role="page" id="logEventPage" data-add-back-btn="true">
+    <div data-role="header"  >
         <h1>Log Event</h1>
+        <a id="checkOutBtn" href="#" class="ui-btn-right" data-icon="check">Log</a>
     </div>
     <!-- /header -->
     <div data-role="content">
@@ -45,8 +46,8 @@
         <input id="commentInput" name="comment" type="text" placeholder="comment"/>
 
         <div data-role="controlgroup">
-            <button data-role="button" id="checkInBtn">checkIn</button>
-            <button data-role="button" id="checkOutBtn">checkOut</button>
+          <!--  <button data-role="button" id="checkInBtn">checkIn</button> -->
+          <!--  <button data-role="button" id="checkOutBtn">checkOut</button> -->
         </div>
 
         <hr>
@@ -272,12 +273,11 @@
 
         $("#selectEventActivityCodeLabel").html(selectedActivity.code);
 
-        $('#checkInBtn').button('enable');
-        $('#checkOutBtn').button('disable');
+        //$('#checkOutBtn').button('disable');
         $('#submitBtn').button('disable');
         $('#valueInput').val(selectedActivity.defaultEventValue);
         $('#commentInput').val('');
-        $('#checkInBtn').click();
+       checkIn();
     }
 
 
@@ -305,6 +305,7 @@
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $.mobile.hidePageLoadingMsg();
+                //$('#checkOutBtn').button('enable');
                 //alert(err);
                  alert('request failed : ' + errorThrown);
             }
@@ -321,16 +322,14 @@
         startDate = new Date().toISOString();
         $("#startTimeIsoInput").val(startDate);
         $("#startTimeInput").val(getCurrentTime());
-        $('#checkInBtn').button('disable');
-        $('#checkOutBtn').button('enable');
+        //$('#checkOutBtn').button('enable');
     }
 
     function checkOut() {
         endDate = new Date().toISOString();
         $("#endTimeIsoInput").val(endDate);
         $("#endTimeInput").val(getCurrentTime());
-        $('#checkOutBtn').button('disable');
-        $('#submitBtn').button('disable');
+        //$('#checkOutBtn').button('disable');
         submitEvent();
     }
 
@@ -341,7 +340,7 @@
 
     $("#checkOutBtn").click(function (event) {
         checkOut();
-        $('#submitBtn').button('enable');
+       // $('#submitBtn').button('enable');
         event.preventDefault();
     });
 
