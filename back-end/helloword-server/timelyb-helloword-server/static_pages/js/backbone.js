@@ -11,17 +11,23 @@ $(function () {
             "!/": "activities", // Начальная страница
             "success": "success", // Блок удачи
             "error": "error", // Блок ошибки
-            "logEvent": "logEvent",
+            "logEvent/:name/:startDate": "logEvent",
+            "logEvent/:name": "logEvent",
             "activities": "activities"
-
         },
 
         activities: function () {
             Views.activities.render();
         },
 
-        logEvent: function () {
-            Views.logEvent.render();
+        logEvent: function (name, startDate) {
+            console.debug("name: " + name + ", startDate: " + startDate);
+            if (startDate == undefined) {
+                controller.navigate("logEvent/" + (name) + "/" + (new Date().toUTCString()), true);
+            } else {
+                Views.logEvent.render();
+            }
+
         },
 
         start: function () {
