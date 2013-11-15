@@ -2,32 +2,45 @@ $(function () {
 
 
     var AppState = {
-        username: ""
+        username: "",
+        activities: null
     };
 
     var Controller = Backbone.Router.extend({
         routes: {
-            "": "start", // Пустой hash-тэг
+            "": "activities", // Пустой hash-тэг
             "!/": "activities", // Начальная страница
             "success": "success", // Блок удачи
             "error": "error", // Блок ошибки
-            "logEvent/:name/:startDate": "logEvent",
+            //"logEvent/:name/:startDate": "logEvent",
             "logEvent/:name": "logEvent",
             "activities": "activities"
         },
 
         activities: function () {
-            Views.activities.render();
+
+            if (AppState.activities) {
+                Views.activities.render();
+            } else {
+                requestActivities(function (data){
+                    AppState.activities = data;
+                    Views.activities.render();
+                })
+            }
         },
 
-        logEvent: function (name, startDate) {
-            console.debug("name: " + name + ", startDate: " + startDate);
-            if (startDate == undefined) {
-                controller.navigate("logEvent/" + (name) + "/" + (new Date().toUTCString()), true);
-            } else {
-                Views.logEvent.render();
+        logEvent: function (code) {
+            AppState.startDate = new Date();
+
+            if (!AppState.activities) {
+                requestActivities(function (data){
+                    AppState.activities = data;
+                }, null, true)
             }
 
+            AppState.currentActivity = _.where(AppState.activities, {code: code})[0];
+            console.debug("name: " + code );
+            Views.logEvent.render();
         },
 
         start: function () {
@@ -65,11 +78,24 @@ $(function () {
             console.log("cancel");
         },
         checkIn: function () {
-            console.log("checkIn");
-            controller.navigate("activities", true);
+            $(this.el).find(":button[name='checkIn']").attr("disabled", "disabled");
+
+            var value = $(this.el).find("input[name='value']").val();
+
+            sendCheckIn(AppState.currentActivity, value, AppState.startDate, new Date(), function (){
+                controller.navigate("activities", true);
+            });
         },
         render: function () {
             $(this.el).html(this.template(AppState));
+        }
+    });
+
+    var ActivityItemView = Backbone.View.extend({
+        tagName: "div",
+        template: _.template($("#activityItem").html()),
+        render: function () {
+            $(this.el).html(this.template(this.model));
         }
     });
 
@@ -78,11 +104,34 @@ $(function () {
 
         template: _.template($('#activities').html()),
 
+        initialize: function () {
+            this._itemViews = [];
+        },
+
         events: {
 
         },
         render: function () {
-            $(this.el).html(this.template(AppState));
+            var that = this;
+
+            that._itemViews = [];
+
+            jQuery.each(AppState.activities, function (itemIndx, item) {
+                that._itemViews.push(new ActivityItemView({
+                    model: item
+                }));
+            });
+
+            // Clear out this element.
+            $(this.el).empty();
+
+            // Render each sub-view and append it to the parent view's element.
+            _(this._itemViews).each(function (dv) {
+                dv.render();
+                var childRenderEl = dv.$el;
+                childRenderEl.show();
+                that.$el.append(childRenderEl);
+            });
         }
 
     });
