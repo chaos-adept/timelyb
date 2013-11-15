@@ -12,8 +12,8 @@
     <script src="http://backbonejs.org/backbone.js"></script>
 </head>
 <body>
-
-<div id="menu"> <!-- Блок меню -->
+<!-- Блок меню
+<div id="menu">
     <ul>
         <li><a href="#">Start</a></li>
         <li><a href="#logEvent">Log Event</a> </li>
@@ -21,18 +21,18 @@
         <li><a href="#error">Error</a></li>
     </ul>
 </div>
-
+-->
 
 <div id="block" class="block">
 </div>
 
 <script type="text/template" id="activityItem">
-  <a href="#logEvent/<%=code%>"> <%= name %> </a> <br/>
+  <a href="#logEvent/<%=code%>"> <%= code %> </a>
 </script>
 
 <script type="text/template" id="activities">
-    <ul>
-    </ul>
+    <div>
+    </div>
 </script>
 
 <script type="text/template" id="logEvent">

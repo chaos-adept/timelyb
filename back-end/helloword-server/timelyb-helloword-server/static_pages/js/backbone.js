@@ -79,12 +79,15 @@ $(function () {
         },
         checkIn: function () {
             $(this.el).find(":button[name='checkIn']").attr("disabled", "disabled");
-
+            var that = this;
             var value = $(this.el).find("input[name='value']").val();
 
             sendCheckIn(AppState.currentActivity, value, AppState.startDate, new Date(), function (){
                 controller.navigate("activities", true);
-            });
+            }, function (){
+                $(that.el).find(":button[name='checkIn']").removeAttr("disabled");
+            }
+            );
         },
         render: function () {
             $(this.el).html(this.template(AppState));

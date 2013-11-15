@@ -1,3 +1,10 @@
+function sortActivities(a, b) { // non-anonymous as you ordered...
+    return b.code.toLocaleLowerCase() < a.code.toLocaleLowerCase() ?  1 // if b should come earlier, push a to end
+         : b.code.toLocaleLowerCase() > a.code.toLocaleLowerCase() ? -1 // if b should come later, push a to begin
+         : 0;                   // a and b are equal
+}
+
+
 function requestActivities(successHandler, errorHandler, sync) {
             $.ajax({
                 url: "/service/event.activities",
@@ -8,7 +15,10 @@ function requestActivities(successHandler, errorHandler, sync) {
                 data: JSON.stringify({
                 }),
                 success: function (data) {
-                    successHandler(data.items);
+                    activities = data.items;
+                    activities.sort(sortActivities);
+
+                    successHandler(activities);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     errorHandler(textStatus + ", " + errorThrown);
@@ -16,7 +26,7 @@ function requestActivities(successHandler, errorHandler, sync) {
             });
 }
 
-function sendCheckIn(activity, value, startDate, endDate, successHandler) {
+function sendCheckIn(activity, value, startDate, endDate, successHandler, errorHandler) {
 
         $.ajax({
             url: "/service/event.add",
@@ -34,6 +44,7 @@ function sendCheckIn(activity, value, startDate, endDate, successHandler) {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('request failed : ' + errorThrown);
+                errorHandler( textStatus + errorThrown)
             }
         });
 
