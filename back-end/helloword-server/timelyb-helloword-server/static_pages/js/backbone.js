@@ -27,7 +27,7 @@ $(function () {
 
             AppState.checkAndLoadActivities();
 
-            AppState.currentActivity = _.where(AppState.activities(), {code: code})[0];
+            AppState.currentActivity = AppState.findActivity(code);
             console.debug("name: " + code );
             Views.logEvent.render();
         },
@@ -58,6 +58,10 @@ $(function () {
         }
     });
 
+    function navigateToActivityPage() {
+        controller.navigate("activities", true);
+    }
+
     var controller = new Controller(); // Создаём контроллер
 
 //VIEW
@@ -74,14 +78,14 @@ $(function () {
             console.log("cancel");
         },
         checkIn: function () {
-            $(this.el).find(":button[name='checkIn']").attr("disabled", "disabled");
+            $(this.el).find(":button[name='checkIn']").disableButton();
             var that = this;
             var value = $(this.el).find("input[name='value']").val();
 
             sendCheckIn(AppState.currentActivity, value, AppState.startDate, new Date(), function (){
-                controller.navigate("activities", true);
+                navigateToActivityPage();
             }, function (){
-                $(that.el).find(":button[name='checkIn']").removeAttr("disabled");
+                $(that.el).find(":button[name='checkIn']").enableButton();
             }
             );
         },
@@ -181,6 +185,50 @@ $(function () {
     var AddEventView = Backbone.View.extend({
         tagName: "div", // DOM элемент widget'а
         template: _.template($('#addEvent').html()),
+
+        events: {
+            "click :button[name='submit']": "submit",
+            "click :button[name='cancel']": "cancel"
+        },
+
+        serialize: function () {
+            var obj = $("form[name='inputValuesForm']").serializeObject();
+
+            return obj;
+        },
+
+        submit: function () {
+
+            //todo move to model
+          function getStartDate() {
+            var result = new Date( parseInt(this.model.attributes.year), parseInt(this.model.attributes.month), parseInt(this.model.attributes.day), parseInt(this.model.attributes.startHour), parseInt(this.model.attributes.startMinutes), 0, 0);
+            return result;
+          }
+          function getEndDate() {
+            var result = new Date(this.model.attributes.year, this.model.attributes.month, this.model.attributes.day, this.model.attributes.endHour, this.model.attributes.endMinutes, 0, 0);
+            return result;
+          }
+
+            $(this.el).find(":button[name='submit']").disableButton();
+
+            var result = this.serialize();
+
+            this.model.set(result);
+            var activity = this.model.getActivity();
+            var startDate = getStartDate.apply(this);
+            var endDate = getEndDate.apply(this);
+
+            sendCheckIn(activity, this.model.get("value"), startDate, endDate, navigateToActivityPage, this.enableSubmitBtn);
+
+
+//            sendCheckIn();
+        },
+
+
+
+        enableSubmitBtn: function () {
+            $(this.el).find(":button[name='submit']").enableButton();
+        },
 
         addToStage: function () {
             $("#block").empty();

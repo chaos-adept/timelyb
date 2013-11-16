@@ -49,27 +49,35 @@
 </script>
 
 <script type="text/template" id="addEvent">
-    <select name="activityCode">
-     <% _.each( activitiesOptions(), function( activity ){ %>
-            <% if (activityCode == activity.code) { %>
-                <option value="<%- activity.code %>" selected><%- activity.code %></option>
-            <% } else { %>
-                <option value="<%- activity.code %>"><%- activity.code %></option>
-            <% } %>
-     <% }); %>
-    </select>
+    <form name="inputValuesForm">
+        <select name="activityCode">
+         <% _.each( activitiesOptions(), function( activity ){ %>
+                <% if (activityCode == activity.code) { %>
+                    <option value="<%- activity.code %>" selected><%- activity.code %></option>
+                <% } else { %>
+                    <option value="<%- activity.code %>"><%- activity.code %></option>
+                <% } %>
+         <% }); %>
+        </select>
+        <hr/>
+        date:
+        <input type="number" maxlength="4" name="year" placeholder="YYYY" value="<%= year %>"/>
+        <input type="number" maxlength="2" name="month" placeholder="MM" value="<%= month %>"/>
+        <input type="number" maxlength="2" name="day" placeholder="DD" value="<%= day %>"/>
+        <hr/>
+        <input type="number" name="value" placeholder="value"/>
+        <hr/>
+        start:
+        <input type="number" maxlength="2" name="startHour" placeholder="HH" value="<%= startHour %>"/>
+        <input type="number" maxlength="2" name="startMinutes" placeholder="MM" value="<%= startMinutes %>"/>
+        <hr/>
+        end  :
+        <input type="number" maxlength="2" name="endHour" placeholder="HH" value="<%= endHour %>"/>
+        <input type="number" maxlength="2" name="endMinutes" placeholder="MM" value="<%= endMinutes %>"/>
+    </form>
     <hr/>
-    <input type="number" maxlength="4" name="year" placeholder="YYYY" value="<%= year %>"/>
-    <input type="number" maxlength="2" name="month" placeholder="MM" value="<%= month %>"/>
-    <input type="number" maxlength="2" name="day" placeholder="DD" value="<%= day %>"/>
-    <hr/>
-    start:
-    <input type="number" maxlength="2" name="startHour" placeholder="HH" value="<%= startHour %>"/>
-    <input type="number" maxlength="2" name="startTime" placeholder="MM" value="<%= startMinutes %>"/>
-    <hr/>
-    end:
-    <input type="number" maxlength="2" name="endHour" placeholder="HH" value="<%= endHour %>"/>
-    <input type="number" maxlength="2" name="endTime" placeholder="MM" value="<%= endMinutes %>"/>
+    <input type="button" name="cancel" value="Cancel"/>
+    <input type="button" name="submit" value="Submit"/>
 </script>
 
 <!-- Блок ввода имени пользователя -->
@@ -103,6 +111,8 @@
 </script>
 
 <script src="js/domain-models.js">
+</script>
+<script src="js/ui-utils.js">
 </script>
 <script src="js/backbone.js">
 </script>

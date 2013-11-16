@@ -6,6 +6,23 @@
  * To change this template use File | Settings | File Templates.
  */
 
+$.fn.serializeObject = function()
+{
+   var o = {};
+   var a = this.serializeArray();
+   $.each(a, function() {
+       if (o[this.name]) {
+           if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+           }
+           o[this.name].push(this.value || '');
+       } else {
+           o[this.name] = this.value || '';
+       }
+   });
+   return o;
+};
+
 var AppState = {
     username: "",
     _activities: null,
@@ -22,7 +39,11 @@ var AppState = {
     },
     activities: function () {
         return AppState.getActivities();
+    },
+    findActivity: function (activityCode) {
+        return _.where(AppState.activities(), {code: activityCode})[0];
     }
+
 };
 
 var AddEventRequestModel = Backbone.Model.extend({
@@ -38,8 +59,10 @@ var AddEventRequestModel = Backbone.Model.extend({
     this.activityCode = null;
     Backbone.Model.apply(this, arguments);
   },
-
   activitiesOptions: function () {
     return AppState.activities();
+  },
+  getActivity: function () {
+      return AppState.findActivity(this.attributes.activityCode)
   }
 });
