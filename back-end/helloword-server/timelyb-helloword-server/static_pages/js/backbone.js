@@ -1,17 +1,7 @@
 $(function () {
 
 
-    var AppState = {
-        username: "",
-        activities: null,
-        checkAndLoadActivities: function () {
-            if (!AppState.activities) {
-                requestActivities(function (data){
-                    AppState.activities = data;
-                }, null, true)
-            }
-        }
-    };
+
 
     var Controller = Backbone.Router.extend({
         routes: {
@@ -21,20 +11,15 @@ $(function () {
             "error": "error", // Блок ошибки
             //"logEvent/:name/:startDate": "logEvent",
             "logEvent/:name": "logEvent",
-            "addEvent": "addEvent",
+            "addEvent": "addEventPage",
             "activities": "activities"
         },
 
         activities: function () {
 
-            if (AppState.activities) {
-                Views.activities.render();
-            } else {
-                requestActivities(function (data){
-                    AppState.activities = data;
-                    Views.activities.render();
-                })
-            }
+            AppState.checkAndLoadActivities();
+
+            Views.activities.render();
         },
 
         logEvent: function (code) {
@@ -42,14 +27,16 @@ $(function () {
 
             AppState.checkAndLoadActivities();
 
-            AppState.currentActivity = _.where(AppState.activities, {code: code})[0];
+            AppState.currentActivity = _.where(AppState.activities(), {code: code})[0];
             console.debug("name: " + code );
             Views.logEvent.render();
         },
 
-        addEvent: function() {
+        addEventPage: function() {
             AppState.checkAndLoadActivities();
-            Views.addEvent.render();
+            var model = new AddEventRequestModel();
+            var addEventView = new AddEventView({model: model});
+            addEventView.addToStage();
         },
 
         start: function () {
@@ -133,7 +120,7 @@ $(function () {
             var containerEl = $(this.el).find(".activitiesContainer");
             that._itemViews = [];
 
-            jQuery.each(AppState.activities, function (itemIndx, item) {
+            jQuery.each(AppState.activities(), function (itemIndx, item) {
                 that._itemViews.push(new ActivityItemView({
                     model: item
                 }));
@@ -192,11 +179,17 @@ $(function () {
     });
 
     var AddEventView = Backbone.View.extend({
-        el: $("#block"), // DOM элемент widget'а
+        tagName: "div", // DOM элемент widget'а
         template: _.template($('#addEvent').html()),
 
+        addToStage: function () {
+            $("#block").empty();
+            this.render();
+            $("#block").append(this.el);
+        },
+
         render: function () {
-            $(this.el).html(this.template(AppState));
+            $(this.el).html(this.template(this.model));
         }
     });
 
@@ -205,7 +198,6 @@ $(function () {
         success: new Success(),
         error: new Error(),
         logEvent: new LogEventView(),
-        addEvent: new AddEventView(),
         activities: new ActivitiesView()
     };
 
