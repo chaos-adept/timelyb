@@ -31,8 +31,12 @@
 </script>
 
 <script type="text/template" id="activities">
-    <div>
+    <div id="menu">
+        <a href="#addEvent">Add Event</a>
+
     </div>
+    <hr/>
+    <div class="activitiesContainer"></div>
 </script>
 
 <script type="text/template" id="logEvent">
@@ -42,6 +46,19 @@
     <br/>
     <input type="button" name="cancel" value="Cancel"/>
     <input type="button" name="checkIn" value="CheckIn"/>
+</script>
+
+<script type="text/template" id="addEvent">
+    <select name="activityCode">
+     <% _.each( activities, function( activity ){ %>
+            <option value="<%- activity.code %>"><%- activity.code %></option>
+     <% }); %>
+    </select>
+    <hr/>
+    <input type="number" maxlength="4" name="year" placeholder="year"/>
+    <input type="number" maxlength="2" name="month" placeholder="month"/>
+    <input type="number" maxlength="2" name="day" placeholder="day"/>
+    <hr/>
 </script>
 
 <!-- Блок ввода имени пользователя -->

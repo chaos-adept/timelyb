@@ -3,7 +3,14 @@ $(function () {
 
     var AppState = {
         username: "",
-        activities: null
+        activities: null,
+        checkAndLoadActivities: function () {
+            if (!AppState.activities) {
+                requestActivities(function (data){
+                    AppState.activities = data;
+                }, null, true)
+            }
+        }
     };
 
     var Controller = Backbone.Router.extend({
@@ -14,6 +21,7 @@ $(function () {
             "error": "error", // Блок ошибки
             //"logEvent/:name/:startDate": "logEvent",
             "logEvent/:name": "logEvent",
+            "addEvent": "addEvent",
             "activities": "activities"
         },
 
@@ -32,15 +40,16 @@ $(function () {
         logEvent: function (code) {
             AppState.startDate = new Date();
 
-            if (!AppState.activities) {
-                requestActivities(function (data){
-                    AppState.activities = data;
-                }, null, true)
-            }
+            AppState.checkAndLoadActivities();
 
             AppState.currentActivity = _.where(AppState.activities, {code: code})[0];
             console.debug("name: " + code );
             Views.logEvent.render();
+        },
+
+        addEvent: function() {
+            AppState.checkAndLoadActivities();
+            Views.addEvent.render();
         },
 
         start: function () {
@@ -117,6 +126,11 @@ $(function () {
         render: function () {
             var that = this;
 
+            // Clear out this element.
+            $(this.el).empty();
+
+            $(this.el).html(this.template(AppState));
+            var containerEl = $(this.el).find(".activitiesContainer");
             that._itemViews = [];
 
             jQuery.each(AppState.activities, function (itemIndx, item) {
@@ -125,15 +139,14 @@ $(function () {
                 }));
             });
 
-            // Clear out this element.
-            $(this.el).empty();
+
 
             // Render each sub-view and append it to the parent view's element.
             _(this._itemViews).each(function (dv) {
                 dv.render();
                 var childRenderEl = dv.$el;
                 childRenderEl.show();
-                that.$el.append(childRenderEl);
+                $(containerEl).append(childRenderEl);
             });
         }
 
@@ -178,11 +191,21 @@ $(function () {
         }
     });
 
+    var AddEventView = Backbone.View.extend({
+        el: $("#block"), // DOM элемент widget'а
+        template: _.template($('#addEvent').html()),
+
+        render: function () {
+            $(this.el).html(this.template(AppState));
+        }
+    });
+
     Views = {
         start: new Start(),
         success: new Success(),
         error: new Error(),
         logEvent: new LogEventView(),
+        addEvent: new AddEventView(),
         activities: new ActivitiesView()
     };
 
