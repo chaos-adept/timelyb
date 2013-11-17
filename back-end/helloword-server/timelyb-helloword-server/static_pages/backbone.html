@@ -26,13 +26,29 @@
 <div id="block" class="block">
 </div>
 
+<script type="text/template" id="eventItem">
+  <!-- <a href="#editEvent/<%=id%>"> <%= activityCode %> <%= startTime %> <%= duration %> </a> -->
+    test
+</script>
+
+<script type="text/template" id="recentEvents">
+    <div class="menu">
+        <a href="#addEvent">Add Event</a>
+        <button name="refresh">Refresh</button>
+    </div>
+    <hr/>
+    <div class="eventsContainer"></div>
+</script>
+
+
 <script type="text/template" id="activityItem">
   <a href="#logEvent/<%=code%>"> <%= code %> </a>
 </script>
 
 <script type="text/template" id="activities">
-    <div id="menu">
+    <div class="menu">
         <a href="#addEvent">Add Event</a>
+        <a href="#events/recent">Recent Events</a>
 
     </div>
     <hr/>
@@ -113,6 +129,10 @@
 <script src="js/domain-models.js">
 </script>
 <script src="js/ui-utils.js">
+</script>
+<script src="js/view.js">
+</script>
+<script src="js/controller.js">
 </script>
 <script src="js/backbone.js">
 </script>
