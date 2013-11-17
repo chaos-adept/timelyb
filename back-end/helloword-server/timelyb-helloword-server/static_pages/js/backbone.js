@@ -1,11 +1,14 @@
 $(function () {
 
-    var controller = new Controller(); // Создаём контроллер
+    controller = new Controller(); // Создаём контроллер
 
 
 
 
     Backbone.history.start();  // Запускаем HTML5 History push
 
-
 });
+
+function navigateToActivityPage() {
+    controller.navigate("activities", true);
+}

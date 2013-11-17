@@ -8,20 +8,25 @@
             "click :button[name='checkIn']": "checkIn",
             "click :button[name='cancel']": "cancel"
         },
-        cancel: function () {
-            console.log("cancel");
-        },
         checkIn: function () {
             $(this.el).find(":button[name='checkIn']").disableButton();
             var that = this;
             var value = $(this.el).find("input[name='value']").val();
 
-            sendCheckIn(AppState.currentActivity, value, AppState.startDate, new Date(), function (){
+            sendCheckIn(
+                    {activity: AppState.currentActivity,
+                    value: value,
+                    startDate: AppState.startDate,
+                    endDate: new Date()},
+            function (){
                 navigateToActivityPage();
             }, function (){
                 $(that.el).find(":button[name='checkIn']").enableButton();
             }
             );
+        },
+        cancel: function () {
+            navigateToActivityPage();
         },
         render: function () {
             $(this.el).html(this.template(AppState));
@@ -106,11 +111,11 @@
             var containerEl = $(this.el).find(".eventsContainer");
             that._itemViews = [];
 
-//            jQuery.each(AppState.eventsProvider.events(), function (itemIndx, item) {
-//                that._itemViews.push(new EventItemView({
-//                    model: item
-//                }));
-//            });
+            jQuery.each(AppState.events(), function (itemIndx, item) {
+                that._itemViews.push(new EventItemView({
+                    model: item
+                }));
+            });
 
 
 
@@ -181,30 +186,36 @@
         submit: function () {
 
             //todo move to model
-          function getStartDate() {
-            var result = new Date( parseInt(this.model.attributes.year), parseInt(this.model.attributes.month), parseInt(this.model.attributes.day), parseInt(this.model.attributes.startHour), parseInt(this.model.attributes.startMinutes), 0, 0);
-            return result;
-          }
-          function getEndDate() {
-            var result = new Date(this.model.attributes.year, this.model.attributes.month, this.model.attributes.day, this.model.attributes.endHour, this.model.attributes.endMinutes, 0, 0);
-            return result;
-          }
-
             $(this.el).find(":button[name='submit']").disableButton();
 
             var result = this.serialize();
 
             this.model.set(result);
             var activity = this.model.getActivity();
-            var startDate = getStartDate.apply(this);
-            var endDate = getEndDate.apply(this);
+            var startDate = this.model.getStartDate();
+            var endDate = this.model.getEndDate();
 
-            sendCheckIn(activity, this.model.get("value"), startDate, endDate, navigateToActivityPage, this.enableSubmitBtn);
+            var reqParamObj =
+                   {id: this.model.get('id'),
+                    activity: activity,
+                    value: this.model.get("value"),
+                    startDate: startDate,
+                    endDate: endDate};
+
+            sendCheckIn(reqParamObj, this.onSumbitted, this.enableSubmitBtn);
 
 
 //            sendCheckIn();
         },
 
+        onSumbitted: function (event) {
+            AppState.addOrUpdateEvent(event);
+            navigateToActivityPage();
+        },
+
+        cancel: function () {
+            navigateToActivityPage();
+        },
 
 
         enableSubmitBtn: function () {

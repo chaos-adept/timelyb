@@ -23,6 +23,52 @@ $.fn.serializeObject = function()
    return o;
 };
 
+var AddEventRequestModel = Backbone.Model.extend({
+  constructor: function(event) {
+    var currentDate = new Date();
+    if (event) {
+        currentDate = new Date(event.startTime)
+    }
+    this.year = currentDate.getFullYear();
+    this.month = currentDate.getMonth();
+    this.day = currentDate.getDate();
+    this.startHour = currentDate.getHours();
+    this.startMinutes = currentDate.getMinutes();
+
+    this.endHour = this.startHour;
+    this.endMinutes = this.startMinutes;
+
+    this.activityCode = null;
+    this.id = null;
+    this.value = 0;
+
+    if (event) {
+        this.id = event.id
+        this.activityCode = event.activity;
+        this.value = event.value;
+        var endDate = new Date(event.endTime);
+        this.endHour = endDate.getHours();
+        this.endMinutes = endDate.getMinutes();
+    }
+
+    Backbone.Model.apply(this, arguments);
+  },
+    getStartDate: function () {
+        var result = new Date(parseInt(this.attributes.year), parseInt(this.attributes.month), parseInt(this.attributes.day), parseInt(this.attributes.startHour), parseInt(this.attributes.startMinutes), 0, 0);
+        return result;
+    },
+    getEndDate: function () {
+        var result = new Date(this.attributes.year, this.attributes.month, this.attributes.day, this.attributes.endHour, this.attributes.endMinutes, 0, 0);
+        return result;
+    },
+  activitiesOptions: function () {
+    return AppState.activities();
+  },
+  getActivity: function () {
+      return AppState.findActivity(this.attributes.activityCode)
+  }
+});
+
 var AppState = {
     username: "",
     _activities: null,
@@ -42,27 +88,28 @@ var AppState = {
     },
     findActivity: function (activityCode) {
         return _.where(AppState.activities(), {code: activityCode})[0];
+    },
+    checkAndLoadEvents: function () {
+        if (!AppState._events) {
+            requestEvents(function (data){
+                AppState._events = data;
+            });
+        }
+    },
+    events: function () {
+        AppState.checkAndLoadEvents();
+        return AppState._events;
+    },
+    findEvent: function (eventId) {
+        return _.where(AppState.events(), {id: eventId})[0];
+    },
+    addOrUpdateEvent: function (event) {
+        var existedEvent = AppState.findEvent(event.id);
+        if (existedEvent) {
+            $.extend(existedEvent, event);
+        } else {
+            AppState.events().push(event)
+        }
     }
 
 };
-
-var AddEventRequestModel = Backbone.Model.extend({
-  constructor: function() {
-    var currentDate = new Date();
-    this.year = currentDate.getFullYear();
-    this.month = currentDate.getMonth();
-    this.day = currentDate.getDate();
-    this.startHour = currentDate.getHours();
-    this.startMinutes = currentDate.getMinutes();
-    this.endHour = this.startHour;
-    this.endMinutes = this.startMinutes;
-    this.activityCode = null;
-    Backbone.Model.apply(this, arguments);
-  },
-  activitiesOptions: function () {
-    return AppState.activities();
-  },
-  getActivity: function () {
-      return AppState.findActivity(this.attributes.activityCode)
-  }
-});

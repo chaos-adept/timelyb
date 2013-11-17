@@ -15,18 +15,28 @@ from google.appengine.ext import ndb, deferred
 import datetime
 
 # Create the request string containing the user's name
-class LogEventRequest(messages.Message):
+class EventMessage(messages.Message):
     startTime = messages.StringField(2, required=True)
     endTime = messages.StringField(3, required=True)
     comment = messages.StringField(4, required=False)
     value = messages.FloatField(5, required=True)
     activity = messages.StringField(6, required=True)
+    id = messages.StringField(7, required=False)
 
 # Create the response string
 class LogEventResponse(messages.Message):
     message = messages.StringField(1, required=True)
 
 class ActivitiesRequest(messages.Message):
+    pass
+
+class EventListRequest(messages.Message):
+    limit = messages.IntegerField(1, required=True)
+    pass
+
+class EventsResponse(messages.Message):
+    items = messages.MessageField(message_type=EventMessage, repeated=True, number=1)
+    next_cursor = messages.StringField(2, required=False)
     pass
 
 class ActivityItemMessage(messages.Message):
@@ -48,20 +58,47 @@ def parseMsgTime(time):
 def activityToMessage(activity):
     return ActivityItemMessage(id = activity.key.urlsafe(), defaultEventValue = activity.defaultEventValue, code = activity.code, name = activity.name, tags = activity.tags, thumbUrl = activity.thumbUrl)
 
+def eventToMessage(event):
+    return EventMessage(id = event.key.urlsafe(), activity = event.activityCode, startTime = event.startTime.isoformat(), endTime = event.endTime.isoformat(), comment = event.comment, value = event.value)
 
 # Create the RPC service to exchange messages
 class EventService(remote.Service):
 
-    @remote.method(LogEventRequest, LogEventResponse)
+    @remote.method(EventListRequest, EventsResponse)
+    def events(self, request):
+        qry = Event.query(Event.actor == users.get_current_user()).order(-Event.startTime)
+        items = qry.map(eventToMessage, limit = request.limit)
+        response = EventsResponse(items = items)
+        return response
+
+
+    # @remote.method(EventListRequest, EventsResponse)
+    # def events(self, request):
+    #     return EventsResponse(items = [])
+
+    @remote.method(EventMessage, EventMessage)
     def add(self, request):
-        event = Event(
-            actor = users.get_current_user(),
-            activityCode = (request.activity),
-            comment = (request.comment),
-            startTime = parseMsgTime(request.startTime), endTime = parseMsgTime(request.endTime),
-            value = request.value)
-        event.put()
-        return LogEventResponse(message='Event has been added')
+
+        if (request.id):
+            eventKey = Key(urlsafe = request.id)
+            event = eventKey.get()
+            event.actor = users.get_current_user()
+            event.activityCode = (request.activity)
+            event.comment = (request.comment)
+            event.startTime = parseMsgTime(request.startTime)
+            event.endTime = parseMsgTime(request.endTime)
+            event.value = request.value
+            event.put()
+        else:
+            event = Event(
+                actor = users.get_current_user(),
+                activityCode = (request.activity),
+                comment = (request.comment),
+                startTime = parseMsgTime(request.startTime), endTime = parseMsgTime(request.endTime),
+                value = request.value)
+            event.put()
+
+        return eventToMessage(event)
 
     @remote.method(ActivitiesRequest, ActivitiesResponse)
     def activities(self, request):

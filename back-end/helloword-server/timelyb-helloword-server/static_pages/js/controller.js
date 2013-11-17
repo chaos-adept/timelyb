@@ -7,6 +7,7 @@
             //"logEvent/:name/:startDate": "logEvent",
             "logEvent/:name": "logEvent",
             "addEvent": "addEventPage",
+            "event/edit/:id": "editEventPage",
             "events/recent": "recentEvents",
             "activities": "activities"
         },
@@ -34,6 +35,12 @@
             var addEventView = new AddEventView({model: model});
             addEventView.addToStage();
         },
+        editEventPage: function (eventId) {
+            var event = AppState.findEvent(eventId);
+            var model = new AddEventRequestModel(event);
+            var editEventView = new AddEventView({model: model});
+            editEventView.addToStage();
+        },
 
         start: function () {
             if (Views.start != null) {
@@ -60,6 +67,4 @@
         }
     });
 
-    function navigateToActivityPage() {
-        controller.navigate("activities", true);
-    }
+

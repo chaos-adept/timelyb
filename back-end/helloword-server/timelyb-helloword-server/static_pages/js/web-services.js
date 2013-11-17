@@ -4,6 +4,10 @@ function sortActivities(a, b) { // non-anonymous as you ordered...
          : 0;                   // a and b are equal
 }
 
+function sortEvents(a, b) {
+    return 0; //todo implement
+}
+
 
 function requestActivities(successHandler, errorHandler, sync) {
             $.ajax({
@@ -15,7 +19,7 @@ function requestActivities(successHandler, errorHandler, sync) {
                 data: JSON.stringify({
                 }),
                 success: function (data) {
-                    activities = data.items;
+                    var activities = data.items;
                     activities.sort(sortActivities);
 
                     successHandler(activities);
@@ -26,18 +30,40 @@ function requestActivities(successHandler, errorHandler, sync) {
             });
 }
 
-function sendCheckIn(activity, value, startDate, endDate, successHandler, errorHandler) {
+function requestEvents(successHandler) {
+            $.ajax({
+                url: "/service/event.events",
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                async : false,
+                dataType: 'json',
+                data: JSON.stringify({
+                    limit: 50
+                }),
+                success: function (data) {
+                    var events = data.items;
+                    events.sort(sortEvents);
 
+                    successHandler(events);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + ", " + errorThrown);
+                }
+            });
+}
+
+function sendCheckIn(requestParamObj, successHandler, errorHandler) {
         $.ajax({
             url: "/service/event.add",
             contentType: 'application/json; charset=utf-8',
             type: "POST",
             dataType: 'json',
             data: JSON.stringify({
-                activity: activity.code,
-                value: value,
-                startTime: startDate.toISOString() ,
-                endTime: endDate.toISOString()
+                id: requestParamObj.id,
+                activity: requestParamObj.activity.code,
+                value: requestParamObj.value,
+                startTime: requestParamObj.startDate.toISOString() ,
+                endTime: requestParamObj.endDate.toISOString()
             }),
             success: function (data) {
                 successHandler(data);
