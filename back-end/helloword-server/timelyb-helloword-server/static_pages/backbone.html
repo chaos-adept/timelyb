@@ -27,7 +27,10 @@
 </div>
 
 <script type="text/template" id="eventItem">
+    <h5>
   <%= activity %> | <%= startTime %> | <%= endTime %> | <%= value %> | - - <a href="#event/edit/<%= id %>">Edit</a> - - |- - <a href="javascript:void(0)">Remove</a>
+        </h5>
+    <hr/>
 </script>
 
 <script type="text/template" id="recentEvents">
@@ -77,19 +80,19 @@
         <hr/>
         date:
         <input type="hidden" name="id" value="<%= id %>"/>
-        <input type="number" maxlength="4" name="year" placeholder="YYYY" value="<%= year %>"/>
-        <input type="number" maxlength="2" name="month" placeholder="MM" value="<%= month %>"/>
-        <input type="number" maxlength="2" name="day" placeholder="DD" value="<%= day %>"/>
+        <input type="number" maxlength="4" size="4" name="year" placeholder="YYYY" value="<%= year %>"/>
+        <input type="number" maxlength="2" size="2" name="month" placeholder="MM" value="<%= month %>"/>
+        <input type="number" maxlength="2" size="2" name="day" placeholder="DD" value="<%= day %>"/>
         <hr/>
         <input type="number" name="value" placeholder="value" value="<%= value %>"/>
         <hr/>
         start:
-        <input type="number" maxlength="2" name="startHour" placeholder="HH" value="<%= startHour %>"/>
-        <input type="number" maxlength="2" name="startMinutes" placeholder="MM" value="<%= startMinutes %>"/>
+        <input type="number" maxlength="2" size="2" name="startHour" placeholder="HH" value="<%= startHour %>"/>
+        <input type="number" maxlength="2" size="2" name="startMinutes" placeholder="MM" value="<%= startMinutes %>"/>
         <hr/>
         end  :
-        <input type="number" maxlength="2" name="endHour" placeholder="HH" value="<%= endHour %>"/>
-        <input type="number" maxlength="2" name="endMinutes" placeholder="MM" value="<%= endMinutes %>"/>
+        <input type="number" maxlength="2" size="2" name="endHour" placeholder="HH" value="<%= endHour %>"/>
+        <input type="number" maxlength="2" size="2" name="endMinutes" placeholder="MM" value="<%= endMinutes %>"/>
     </form>
     <hr/>
     <input type="button" name="cancel" value="Cancel"/>
