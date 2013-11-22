@@ -9,7 +9,9 @@
             "addEvent": "addEventPage",
             "event/edit/:id": "editEventPage",
             "events/recent": "recentEvents",
-            "activities": "activities"
+            "activities": "activities",
+            "settings": "settings"
+
         },
 
         activities: function () {
@@ -40,6 +42,11 @@
             var model = new AddEventRequestModel(event);
             var editEventView = new AddEventView({model: model});
             editEventView.addToStage();
+        },
+
+        settings: function () {
+            AppState.settings.fetch();
+            Views.settingsPage.render();
         },
 
         start: function () {

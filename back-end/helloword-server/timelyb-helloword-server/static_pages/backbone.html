@@ -49,9 +49,9 @@
 
 <script type="text/template" id="activities">
     <div class="menu">
-        <a href="#addEvent">Add Event</a>
-        <a href="#events/recent">Recent Events</a>
-
+        <a href="#addEvent">Add Event</a> |
+        <a href="#events/recent">Recent Events</a> |
+        <a href="#settings">Settings</a>
     </div>
     <hr/>
     <div class="activitiesContainer"></div>
@@ -112,6 +112,16 @@
     </div>
 </script>
 
+
+<script type="text/template" id="settingsPageView">
+    <div>
+        <form>
+            Time-zone offset: <input name="timeZoneOffset" value="<%= AppState.settings.get('timeZoneOffset') %>" />
+        </form>
+        <input type="button" name="cancel" value="Cancel"/>
+        <input type="button" name="submit" value="Submit"/>
+    </div>
+</script>
 
 <!-- Блок ошибки -->
 <script type="text/template" id="error">

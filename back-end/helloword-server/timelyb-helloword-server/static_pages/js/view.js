@@ -168,6 +168,17 @@
         }
     });
 
+
+    var SettingPageView = Backbone.View.extend({
+        el: $("#block"), // DOM элемент widget'а
+
+        template: _.template($('#settingsPageView').html()),
+
+        render: function () {
+            $(this.el).html(this.template(AppState.settings));
+        }
+    });
+
     var AddEventView = Backbone.View.extend({
         tagName: "div", // DOM элемент widget'а
         template: _.template($('#addEvent').html()),
@@ -239,5 +250,6 @@
         error: new Error(),
         logEvent: new LogEventView(),
         activities: new ActivitiesView(),
-        recentEventsView: new RecentEventsView()
+        recentEventsView: new RecentEventsView(),
+        settingsPage: new SettingPageView()
     };

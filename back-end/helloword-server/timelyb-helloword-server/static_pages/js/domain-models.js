@@ -23,6 +23,14 @@ $.fn.serializeObject = function()
    return o;
 };
 
+var SettingsModel = Backbone.Model.extend({
+    constructor: function(event) {
+        this.urlRoot = "/service/settings";
+        this.timeZoneOffset = 0;
+        Backbone.Model.apply(this, arguments);
+    }
+});
+
 var AddEventRequestModel = Backbone.Model.extend({
   constructor: function(event) {
     var currentDate = new Date();
@@ -72,6 +80,7 @@ var AddEventRequestModel = Backbone.Model.extend({
 var AppState = {
     username: "",
     _activities: null,
+    settings: new SettingsModel(),
     checkAndLoadActivities: function () {
         if (!AppState._activities) {
             requestActivities(function (data){

@@ -51,6 +51,8 @@ class ActivitiesResponse(messages.Message):
     items = messages.MessageField(message_type=ActivityItemMessage, repeated=True, number=1)
     next_cursor = messages.StringField(2, required=False)
 
+class SettingsMessage(messages.Message):
+    timeZoneOffset = messages.IntegerField(1, required=False)
 
 def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
@@ -150,5 +152,17 @@ class EventService(remote.Service):
 
 
 
+class SettingsService(remote.Service):
+    @remote.method(SettingsMessage, SettingsMessage)
+    def read(self, request):
+        request.timeZoneOffset = 123
+        return request
 
-app = service.service_mappings([('/service/event', EventService)])
+    @remote.method(SettingsMessage, SettingsMessage)
+    def update(self, request):
+        return request
+
+    pass
+
+
+app = service.service_mappings([('/service/event', EventService), ('/service/settings', SettingsService)])

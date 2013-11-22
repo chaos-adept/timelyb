@@ -75,3 +75,30 @@ function sendCheckIn(requestParamObj, successHandler, errorHandler) {
         });
 
 }
+
+
+
+Backbone.sync = function (method, model, options) {
+    console.log(method + model + options);
+
+    switch (model.urlRoot) {
+        case '/service/settings':
+
+            $.ajax({
+                url: "/service/settings." + method,
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                dataType: 'json',
+                async : false,
+                data: JSON.stringify(model.toJSON()),
+                success: function (data) {
+                    model.set(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('request failed : ' + errorThrown);
+                }});
+
+            break;
+
+    }
+};
