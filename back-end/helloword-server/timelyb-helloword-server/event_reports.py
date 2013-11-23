@@ -1,6 +1,7 @@
 import datetime
 import StringIO
 from google.appengine.api import users, mail
+import sys
 
 __author__ = 'WORKSATION'
 import logging
@@ -29,17 +30,22 @@ def activityToHtmlRow(event):
     span = formatTimeDelta(event.endTime - event.startTime)
     return "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (event.actor.nickname(), event.activityCode, span, event.value, dateToStr(event.startTime), dateToStr(event.endTime))
 
-def SendEmailDailyReport(currentUser, email, fromDate):
+def SendEmailDailyReport(currentUser, email, fromDate, toDate):
 
     cursor = None
 
     htmlOut = StringIO.StringIO()
     cvsOut = StringIO.StringIO()
-
-    query = Event.query(
-            ndb.AND(
+    try:
+        query = Event.query(
                 Event.actor == currentUser,
-                Event.endTime >=  fromDate)).order(Event.endTime)
+                Event.endTime >= fromDate,
+                Event.endTime <= toDate).order(Event.endTime)
+    except:
+        logging.info('error cant be prepared %s', sys.exc_info()[0])
+
+        pass
+
 
     if cursor:
         query.with_cursor(cursor)
