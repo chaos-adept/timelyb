@@ -116,10 +116,10 @@
 <script type="text/template" id="settingsPageView">
     <div>
         <form>
-            Time-zone offset: <input name="timeZoneOffset" value="<%= AppState.settings.get('timeZoneOffset') %>" />
+            Time-zone offset: <input class="timeZoneInput" name="timeZoneOffset" value="<%= AppState.settings.get('timeZoneOffset') %>" />
         </form>
         <input type="button" name="cancel" value="Cancel"/>
-        <input type="button" name="submit" value="Submit"/>
+        <input type="button" name="save" value="Save"/>
     </div>
 </script>
 

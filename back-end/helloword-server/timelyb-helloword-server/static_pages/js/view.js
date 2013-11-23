@@ -174,6 +174,29 @@
 
         template: _.template($('#settingsPageView').html()),
 
+        events: {
+            "click :button[name='save']": "save",
+            "click :button[name='cancel']": "cancel"
+        },
+
+        getInputtedTimZone: function () {
+            return this.$(".timeZoneInput").val();
+        },
+
+        save: function () {
+            $(this.el).find(":button[name='submit']").disableButton();
+            AppState.settings.set({timeZoneOffset: this.getInputtedTimZone()});
+            AppState.settings.save({wait: true});
+
+            $(this.el).find(":button[name='submit']").enableButton();
+
+            navigateToActivityPage();
+        },
+
+        cancel: function () {
+            navigateToActivityPage();
+        },
+
         render: function () {
             $(this.el).html(this.template(AppState.settings));
         }

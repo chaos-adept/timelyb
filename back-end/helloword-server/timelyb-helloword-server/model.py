@@ -18,3 +18,14 @@ class Activity(ndb.Model):
     thumbUrl = ndb.StringProperty(indexed=False, required=False)
     tags = ndb.StringProperty(indexed=True, required=False, repeated=True)
     defaultEventValue = ndb.FloatProperty(indexed=False, required=False)
+
+
+class Settings(ndb.Model):
+    @classmethod
+    def singletonForUser(cls, user):
+        return cls.get_or_insert(ndb.Key('Settings', 'User', 'email', user.email()).id())
+
+    timeZoneOffset = ndb.IntegerProperty(
+        default =  0,
+        verbose_name = "current user timezone",
+        indexed = False)

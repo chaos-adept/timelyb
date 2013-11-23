@@ -6,8 +6,7 @@ __author__ = 'WORKSATION'
 from protorpc import messages
 from protorpc import remote
 from protorpc.wsgi import service
-from model import Event
-from model import Activity
+from model import *
 
 from google.appengine.api import users
 from google.appengine.ext import ndb, deferred
@@ -155,11 +154,21 @@ class EventService(remote.Service):
 class SettingsService(remote.Service):
     @remote.method(SettingsMessage, SettingsMessage)
     def read(self, request):
-        request.timeZoneOffset = 123
+        userSettings = Settings.singletonForUser(users.get_current_user())
+        request.timeZoneOffset = userSettings.timeZoneOffset
         return request
 
     @remote.method(SettingsMessage, SettingsMessage)
+    def create(self, request):
+        return self.update(request)
+
+    @remote.method(SettingsMessage, SettingsMessage)
     def update(self, request):
+        userSettings = Settings.singletonForUser(users.get_current_user())
+        if (request.timeZoneOffset != userSettings.timeZoneOffset):
+            userSettings.timeZoneOffset = request.timeZoneOffset
+            userSettings.put()
+
         return request
 
     pass
