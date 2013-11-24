@@ -1,3 +1,4 @@
+import logging
 import os
 import urllib
 import cgi
@@ -58,6 +59,7 @@ class ReportPage(webapp2.RequestHandler):
         taskqueue.add(url='/reportWorker', method='GET', params={'email': email, 'days':days})
 
         self.response.write('email is going to be sent at %s' % email)
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),

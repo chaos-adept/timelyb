@@ -23,7 +23,9 @@ class Activity(ndb.Model):
 class Settings(ndb.Model):
     @classmethod
     def singletonForUser(cls, user):
-        return cls.get_or_insert(ndb.Key('Settings', 'User', 'email', user.email()).id())
+        return cls.get_or_insert(ndb.Key('Settings', 'User', 'email', user.email()).id(), email = user.email())
+
+    email = ndb.StringProperty(verbose_name='email for reports', indexed=True, required=True)
 
     timeZoneOffset = ndb.IntegerProperty(
         default =  0,

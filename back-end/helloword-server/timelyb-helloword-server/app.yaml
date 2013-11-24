@@ -14,9 +14,14 @@ handlers:
 - url: /pages
   static_dir: static_pages
   login: required
+
 - url: /reportWorker(.*)
   script: reports.app
   login: admin
+- url: /reportPlanner(.*)
+  script: planner.app
+  login: admin
+
 - url: /favicon\.ico
   static_files: favicon.ico
   upload: favicon\.ico
