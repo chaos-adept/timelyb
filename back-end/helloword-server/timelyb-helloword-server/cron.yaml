@@ -1,4 +1,4 @@
 cron:
 - description: setup reports tasks
   url: /reportPlanner?reportType=day
-  schedule: every 1 days
+  schedule: every 24 hours
