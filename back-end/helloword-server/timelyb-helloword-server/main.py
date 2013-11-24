@@ -24,7 +24,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
-        self.redirect('/pages/logEvent.html')
+        self.redirect('/pages/backbone.html')
 
 
 class LogEventPage(webapp2.RequestHandler):

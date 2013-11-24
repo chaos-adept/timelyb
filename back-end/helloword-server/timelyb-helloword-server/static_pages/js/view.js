@@ -83,7 +83,7 @@
     });
 
     var EventItemView = Backbone.View.extend({
-        tagName: "div",
+        tagName: "tr",
         template: _.template($("#eventItem").html()),
         render: function () {
             $(this.el).html(this.template(this.model));

@@ -42,6 +42,16 @@ function requestEvents(successHandler) {
                 }),
                 success: function (data) {
                     var events = data.items;
+                    //correct time from utc to local
+                    var d = new Date();
+                    var n = -d.getTimezoneOffset() / 60;
+
+                    _.each(events, function correctTime(event){
+                        var startTimeAsDate = Date.parse(event.startTime);
+                        var endTimeAsDate = Date.parse(event.endTime);
+                        event.startTimeAsDate = startTimeAsDate.add(n).hour();
+                        event.endTimeAsDate = endTimeAsDate.add(n).hour();
+                    });
                     events.sort(sortEvents);
 
                     successHandler(events);

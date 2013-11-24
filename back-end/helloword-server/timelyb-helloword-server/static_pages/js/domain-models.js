@@ -35,7 +35,7 @@ var AddEventRequestModel = Backbone.Model.extend({
   constructor: function(event) {
     var currentDate = new Date();
     if (event) {
-        currentDate = new Date(event.startTime)
+        currentDate = event.startTimeAsDate
     }
     this.year = currentDate.getFullYear();
     this.month = currentDate.getMonth();
@@ -54,7 +54,7 @@ var AddEventRequestModel = Backbone.Model.extend({
         this.id = event.id
         this.activityCode = event.activity;
         this.value = event.value;
-        var endDate = new Date(event.endTime);
+        var endDate = event.endTimeAsDate;
         this.endHour = endDate.getHours();
         this.endMinutes = endDate.getMinutes();
     }
