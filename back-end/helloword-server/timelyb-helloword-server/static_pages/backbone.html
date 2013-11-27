@@ -42,16 +42,18 @@
 
 
 <script type="text/template" id="activityItem">
-  <a href="#logEvent/<%=code%>"> <%= code %> </a>
+  <a href="#logEvent/<%=code%>"> <b> <%= code %> </b> </a> | <a href="#activities/edit/<%=code%>"> configure </a>
 </script>
 
 <script type="text/template" id="activities">
     <div class="menu">
-        <a href="#addEvent">Add Event</a> |
-        <a href="#events/recent">Recent Events</a> |
+        <a href="#addEvent">+Event</a> |
+        <a href="#activities/add">+Activity</a> |
+        <a href="#events/recent">Recent</a> |
         <a href="#settings">Settings</a>
     </div>
     <hr/>
+
     <div class="activitiesContainer"></div>
 </script>
 
@@ -91,6 +93,20 @@
         end  :
         <input type="number" maxlength="2" size="2" name="endHour" placeholder="HH" value="<%= endHour %>"/>
         <input type="number" maxlength="2" size="2" name="endMinutes" placeholder="MM" value="<%= endMinutes %>"/>
+    </form>
+    <hr/>
+    <input type="button" name="cancel" value="Cancel"/>
+    <input type="button" name="submit" value="Submit"/>
+</script>
+
+<script type="text/template" id="editActivity">
+    <form name="inputValueForm">
+        <input name="id"  type="hidden" value="<%= id %>"/>
+        <input name="code" placeholder="activity name" value="<%= code %>"/>
+        <input name="name" placeholder="activity description" value="<%= name %>"/>
+        <input name="tagsAsString" placeholder="activity tags: box run sun" value="<%= tags.join(' ') %>"/>
+        <input name="thumbUrl" placeholder="activity thumb url" value="<%= thumbUrl %>"/>
+        <input name="defaultEventValue" placeholder="activity default value for new event" value="<%= defaultEventValue %>"/>
     </form>
     <hr/>
     <input type="button" name="cancel" value="Cancel"/>

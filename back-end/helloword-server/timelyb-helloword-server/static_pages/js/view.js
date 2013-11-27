@@ -267,6 +267,41 @@
         }
     });
 
+    EditActivityView = Backbone.View.extend({
+        tagName: "div", // DOM элемент widget'а
+        template: _.template($('#editActivity').html()),
+
+        events: {
+            "click :button[name='submit']": "submit",
+            "click :button[name='cancel']": "cancel"
+        },
+
+        addToStage: function () {
+            $("#block").empty();
+            this.render();
+            $("#block").append(this.el);
+        },
+
+        submit: function () {
+            $(this.el).find(":button[name='submit']").disableButton();
+            $(this.el).find(":button[name='submit']").enableButton();
+        },
+
+
+        onSumbitted: function (activity) {
+            AppState.addOrUpdateActivity(activity);
+            navigateToActivityPage();
+        },
+
+        cancel: function () {
+            navigateToActivityPage();
+        },
+
+        render: function () {
+            $(this.el).html(this.template(this.model.attributes));
+        }
+    });
+
     Views = {
         start: new Start(),
         success: new Success(),

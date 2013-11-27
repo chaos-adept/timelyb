@@ -24,9 +24,20 @@ $.fn.serializeObject = function()
 };
 
 var SettingsModel = Backbone.Model.extend({
-    constructor: function(event) {
+    constructor: function() {
         this.urlRoot = "/service/settings";
         this.timeZoneOffset = 0;
+        Backbone.Model.apply(this, arguments);
+    }
+});
+
+var ActivityModel = Backbone.Model.extend({
+    defaults: {
+        id: null, code: null, name: null, tags: [], thumbUrl: null, defaultEventValue: null
+    },
+
+    constructor: function() {
+        this.urlRoot = "/service/activities";
         Backbone.Model.apply(this, arguments);
     }
 });

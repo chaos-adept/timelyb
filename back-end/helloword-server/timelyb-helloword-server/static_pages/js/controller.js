@@ -10,6 +10,8 @@
             "event/edit/:id": "editEventPage",
             "events/recent": "recentEvents",
             "activities": "activities",
+            "activities/add": "addActivityPage",
+            "activities/edit/:activityCode": "editActivityPage",
             "settings": "settings"
 
         },
@@ -42,6 +44,21 @@
             var model = new AddEventRequestModel(event);
             var editEventView = new AddEventView({model: model});
             editEventView.addToStage();
+        },
+
+        addActivityPage: function() {
+            var model = new ActivityModel();
+            var editModelView = new EditActivityView({model: model});
+            editModelView.addToStage();
+        },
+
+        editActivityPage: function(activityCode) {
+            AppState.checkAndLoadActivities();
+            var activity = AppState.findActivity(activityCode);
+            var model = new ActivityModel();
+            model.set(activity);
+            var editModelView = new EditActivityView({model: model});
+            editModelView.addToStage();
         },
 
         settings: function () {
