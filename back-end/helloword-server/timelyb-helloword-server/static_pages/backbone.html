@@ -132,6 +132,10 @@
 
 
 <script type="text/template" id="settingsPageView">
+    <he />
+        <%= AppState.settings.get('nickname') %> | <a href="<%= AppState.settings.get('logoutUrl') %>" > logout </a>
+    <hr />
+
     <div>
         <form>
             Time-zone offset: <input class="timeZoneInput" name="timeZoneOffset" value="<%= AppState.settings.get('timeZoneOffset') %>" />

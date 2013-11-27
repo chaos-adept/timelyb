@@ -52,6 +52,8 @@ class ActivitiesResponse(messages.Message):
 
 class SettingsMessage(messages.Message):
     timeZoneOffset = messages.IntegerField(1, required=False)
+    logoutUrl = messages.StringField(2, required=False)
+    nickname = messages.StringField(3, required=False)
 
 def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
@@ -118,6 +120,8 @@ class SettingsService(remote.Service):
     @remote.method(SettingsMessage, SettingsMessage)
     def read(self, request):
         userSettings = Settings.singletonForUser(users.get_current_user())
+        request.nickname = users.get_current_user().nickname()
+        request.logoutUrl = users.create_logout_url('/')
         request.timeZoneOffset = userSettings.timeZoneOffset
         return request
 
