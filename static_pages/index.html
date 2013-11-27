@@ -62,12 +62,28 @@
 </script>
 
 <script type="text/template" id="logEvent">
-    activity: <%= currentActivity.code %> <br/>
-    startTime: <%= startDate %> <br/>
-    <input type="number" name="value" value="<%= currentActivity.defaultEventValue %>" placeholder="value"/>
-    <br/>
-    <input type="button" name="cancel" value="Cancel"/>
-    <input type="button" name="checkIn" value="CheckIn"/>
+    <table>
+        <tr>
+            <td>activity</td>
+            <td><strong> <%= currentActivity.code %> </strong></td>
+        </tr>
+        <tr>
+            <td> startTime</td>
+            <td><strong> <%= startDate.format('MM-DD HH:mm') %> </strong></td>
+        </tr>
+        <tr>
+            <td> value</td>
+            <td><input type="number" name="value" value="<%= currentActivity.defaultEventValue %>" placeholder="value"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="button" name="cancel" value="Cancel"/>
+                <input type="button" name="checkIn" value="CheckIn"/>
+            </td>
+        </tr>
+    </table>
 </script>
 
 <script type="text/template" id="addEvent">

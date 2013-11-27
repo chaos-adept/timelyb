@@ -24,7 +24,7 @@
         },
 
         logEvent: function (code) {
-            AppState.startDate = new Date();
+            AppState.startDate = moment();
 
             AppState.checkAndLoadActivities();
 
