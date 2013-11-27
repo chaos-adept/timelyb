@@ -37,7 +37,7 @@
 <script type="text/template" id="recentEvents">
     <div class="menu">
         <a href="#addEvent">Add Event</a>
-        <button name="refresh">Refresh</button>
+<!--        <button name="refresh">Refresh</button> -->
     </div>
     <hr/>
     <table border="1" class="eventsContainer"></table>
@@ -46,7 +46,7 @@
 
 <script type="text/template" id="activityItem">
     <hr/>
-  <a href="#logEvent/<%=code%>"> <b> <%= code %> </b> </a> | <a href="#activities/edit/<%=code%>"> edit </a>
+  | <a href="#logEvent/<%=code%>"> <b> <strong>  <%= code %> </strong> </b> </a> | <a href="#activities/edit/<%=code%>"> <em> <small> edit </small> </em> </a>
 </script>
 
 <script type="text/template" id="activities">
