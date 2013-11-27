@@ -22,6 +22,9 @@ function requestActivities(successHandler, errorHandler, sync) {
                 }),
                 success: function (data) {
                     var activities = data.items;
+                    if (!activities) {
+                        activities = [];
+                    }
                     activities.sort(sortActivities);
 
                     successHandler(activities);
