@@ -47,10 +47,19 @@ function requestEvents(successHandler) {
                     var n = -d.getTimezoneOffset() / 60;
 
                     _.each(events, function correctTime(event){
-                        var startTimeAsDate = Date.parse(event.startTime);
-                        var endTimeAsDate = Date.parse(event.endTime);
-                        event.startTimeAsDate = startTimeAsDate.add(n).hour();
-                        event.endTimeAsDate = endTimeAsDate.add(n).hour();
+                        var startTimeAsDate = moment(event.startTime);
+                        var endTimeAsDate = moment(event.endTime);
+                        if (startTimeAsDate) {
+                            event.startTimeAsDate = startTimeAsDate.add('hours', n);//startTimeAsDate.add(n).hour();
+                        } else {
+                            event.startTimeAsDate = new Date()
+                        }
+                        if (endTimeAsDate) {
+                            event.endTimeAsDate = endTimeAsDate.add('hours', n);//endTimeAsDate.add(n).hour();
+                        } else {
+                            event.endTimeAsDate = new Date()
+                        }
+
                     });
                     events.sort(sortEvents);
 

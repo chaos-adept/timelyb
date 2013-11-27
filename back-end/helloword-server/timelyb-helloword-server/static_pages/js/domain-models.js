@@ -33,15 +33,15 @@ var SettingsModel = Backbone.Model.extend({
 
 var AddEventRequestModel = Backbone.Model.extend({
   constructor: function(event) {
-    var currentDate = new Date();
+    var currentDate = moment();
     if (event) {
         currentDate = event.startTimeAsDate
     }
-    this.year = currentDate.getFullYear();
-    this.month = currentDate.getMonth();
-    this.day = currentDate.getDate();
-    this.startHour = currentDate.getHours();
-    this.startMinutes = currentDate.getMinutes();
+    this.year = currentDate.year();
+    this.month = currentDate.month();
+    this.day = currentDate.date();
+    this.startHour = currentDate.hours();
+    this.startMinutes = currentDate.minutes();
 
     this.endHour = this.startHour;
     this.endMinutes = this.startMinutes;
@@ -55,8 +55,8 @@ var AddEventRequestModel = Backbone.Model.extend({
         this.activityCode = event.activity;
         this.value = event.value;
         var endDate = event.endTimeAsDate;
-        this.endHour = endDate.getHours();
-        this.endMinutes = endDate.getMinutes();
+        this.endHour = endDate.hours();
+        this.endMinutes = endDate.minutes();
     }
 
     Backbone.Model.apply(this, arguments);
