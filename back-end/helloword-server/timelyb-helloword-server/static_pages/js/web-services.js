@@ -10,6 +10,8 @@ function sortEvents(a, b) {
 
 
 function requestActivities(successHandler, errorHandler, sync) {
+    notifyRequestStarted();
+
             $.ajax({
                 url: "/service/event.activities",
                 contentType: 'application/json; charset=utf-8',
@@ -23,14 +25,22 @@ function requestActivities(successHandler, errorHandler, sync) {
                     activities.sort(sortActivities);
 
                     successHandler(activities);
+
+                    notifyRequestCompleted();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+
                     errorHandler(textStatus + ", " + errorThrown);
+
+                    notifyRequestCompleted();
+
                 }
             });
 }
 
 function requestEvents(successHandler) {
+    notifyRequestStarted();
+
             $.ajax({
                 url: "/service/event.events",
                 contentType: 'application/json; charset=utf-8',
@@ -41,6 +51,9 @@ function requestEvents(successHandler) {
                     limit: 50
                 }),
                 success: function (data) {
+
+
+
                     var events = data.items;
                     //correct time from utc to local
                     var d = new Date();
@@ -64,14 +77,21 @@ function requestEvents(successHandler) {
                     events.sort(sortEvents);
 
                     successHandler(events);
+
+                    notifyRequestCompleted();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+
+                    notifyRequestCompleted();
+
                     alert(textStatus + ", " + errorThrown);
                 }
             });
 }
 
 function sendCheckIn(requestParamObj, successHandler, errorHandler) {
+    notifyRequestStarted();
+
         $.ajax({
             url: "/service/event.add",
             contentType: 'application/json; charset=utf-8',
@@ -85,9 +105,11 @@ function sendCheckIn(requestParamObj, successHandler, errorHandler) {
                 endTime: requestParamObj.endDate.toISOString()
             }),
             success: function (data) {
+                notifyRequestCompleted();
                 successHandler(data);
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                notifyRequestCompleted();
                 alert('request failed : ' + errorThrown);
                 errorHandler( textStatus + errorThrown)
             }
@@ -102,7 +124,7 @@ Backbone.sync = function (method, model, options) {
 
     switch (model.urlRoot) {
         case '/service/settings':
-
+            notifyRequestStarted();
             $.ajax({
                 url: "/service/settings." + method,
                 contentType: 'application/json; charset=utf-8',
@@ -111,15 +133,17 @@ Backbone.sync = function (method, model, options) {
                 async : false,
                 data: JSON.stringify(model.toJSON()),
                 success: function (data) {
+                    notifyRequestCompleted();
                     model.set(data);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    notifyRequestCompleted();
                     alert('request failed : ' + errorThrown);
                 }});
 
             break;
         case "/service/activities":
-
+            notifyRequestStarted();
             $.ajax({
                 url: "/service/activity." + method,
                 contentType: 'application/json; charset=utf-8',
@@ -128,9 +152,11 @@ Backbone.sync = function (method, model, options) {
                 async : false,
                 data: JSON.stringify(model.toJSON()),
                 success: function (data) {
+                    notifyRequestCompleted();
                     model.set(data);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    notifyRequestCompleted();
                     alert('request failed : ' + errorThrown);
                 }});
 

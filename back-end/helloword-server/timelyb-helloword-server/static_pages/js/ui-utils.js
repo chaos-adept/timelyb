@@ -38,3 +38,12 @@ function millisecondsToTime(ms)
 
 }
 
+
+function notifyRequestStarted() {
+    $('.progress-indicator').css( 'display', 'block' );
+}
+
+function notifyRequestCompleted() {
+    $('.progress-indicator').css( 'display', 'none' );
+}
+

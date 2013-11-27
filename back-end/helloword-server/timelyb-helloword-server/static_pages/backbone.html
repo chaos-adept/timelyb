@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title></title>
-    <style>
 
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/backbone.css">
 
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="http://underscorejs.org/underscore.js"></script>
@@ -23,6 +22,10 @@
     </ul>
 </div>
 -->
+
+<div class="progress-indicator">
+   <img src="images/icon_loading_75x75.gif" alt="loading..." />
+</div>
 
 <div id="block" class="block">
 </div>
@@ -43,7 +46,7 @@
 
 <script type="text/template" id="activityItem">
     <hr/>
-  <a href="#logEvent/<%=code%>"> <b> <%= code %> </b> </a> | <a href="#activities/edit/<%=code%>"> configure </a>
+  <a href="#logEvent/<%=code%>"> <b> <%= code %> </b> </a> | <a href="#activities/edit/<%=code%>"> edit </a>
 </script>
 
 <script type="text/template" id="activities">
