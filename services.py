@@ -141,7 +141,7 @@ class SettingsService(remote.Service):
 
 class ActivityService(remote.Service):
     def addActivity(self, request):
-        #try to find existed
+        #todo refactor , try optimize
 
         if (request.id):
             activityKey = Key(urlsafe = request.id)
