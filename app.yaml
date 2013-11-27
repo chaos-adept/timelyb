@@ -1,4 +1,4 @@
-application: timelyb-helloword-server
+application: time-lyb
 version: 4
 runtime: python27
 api_version: 1
