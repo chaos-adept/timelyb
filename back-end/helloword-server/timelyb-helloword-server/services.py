@@ -40,8 +40,8 @@ class EventsResponse(messages.Message):
 
 class ActivityItemMessage(messages.Message):
     id = messages.StringField(1, required=False)
-    code = messages.StringField(2, required=True)
-    name = messages.StringField(3, required=True)
+    code = messages.StringField(2, required=False)
+    name = messages.StringField(3, required=False)
     tags = messages.StringField(4, required=False, repeated=True)
     thumbUrl = messages.StringField(5, required=False)
     defaultEventValue = messages.FloatField(6, required=False)
@@ -109,7 +109,33 @@ class EventService(remote.Service):
         response = ActivitiesResponse(items = items)
         return response
 
-    @remote.method(ActivityItemMessage, ActivityItemMessage)
+
+
+
+
+class SettingsService(remote.Service):
+
+    @remote.method(SettingsMessage, SettingsMessage)
+    def read(self, request):
+        userSettings = Settings.singletonForUser(users.get_current_user())
+        request.timeZoneOffset = userSettings.timeZoneOffset
+        return request
+
+    @remote.method(SettingsMessage, SettingsMessage)
+    def create(self, request):
+        return self.update(request)
+
+    @remote.method(SettingsMessage, SettingsMessage)
+    def update(self, request):
+        userSettings = Settings.singletonForUser(users.get_current_user())
+        if (request.timeZoneOffset != userSettings.timeZoneOffset):
+            userSettings.timeZoneOffset = request.timeZoneOffset
+            userSettings.put()
+        return request
+    pass
+
+
+class ActivityService(remote.Service):
     def addActivity(self, request):
         #try to find existed
 
@@ -149,29 +175,25 @@ class EventService(remote.Service):
                 activity.put()
                 return activityToMessage(activity)
 
-
-
-class SettingsService(remote.Service):
-    @remote.method(SettingsMessage, SettingsMessage)
+    @remote.method(ActivityItemMessage, ActivityItemMessage)
     def read(self, request):
-        userSettings = Settings.singletonForUser(users.get_current_user())
-        request.timeZoneOffset = userSettings.timeZoneOffset
-        return request
+        if (request.id):
+            return activityToMessage(Key(urlsafe = request.id).get())
+        else:
+            if (request.code):
+                activity = Activity.query(Activity.code == request.code, Activity.actor == users.get_current_user()).fetch(1)[0]
+                return activityToMessage(activity)
+        return None #todo throw error
 
-    @remote.method(SettingsMessage, SettingsMessage)
+    @remote.method(ActivityItemMessage, ActivityItemMessage)
     def create(self, request):
         return self.update(request)
 
-    @remote.method(SettingsMessage, SettingsMessage)
+    @remote.method(ActivityItemMessage, ActivityItemMessage)
     def update(self, request):
-        userSettings = Settings.singletonForUser(users.get_current_user())
-        if (request.timeZoneOffset != userSettings.timeZoneOffset):
-            userSettings.timeZoneOffset = request.timeZoneOffset
-            userSettings.put()
-
-        return request
-
-    pass
+        return self.addActivity(request)
 
 
-app = service.service_mappings([('/service/event', EventService), ('/service/settings', SettingsService)])
+
+
+app = service.service_mappings([('/service/event', EventService), ('/service/settings', SettingsService), ('/service/activity', ActivityService)])

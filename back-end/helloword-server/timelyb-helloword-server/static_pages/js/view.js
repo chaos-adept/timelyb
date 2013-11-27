@@ -284,6 +284,21 @@
 
         submit: function () {
             $(this.el).find(":button[name='submit']").disableButton();
+
+            var obj = $("form[name='inputValueForm']").serializeObject();
+            var tags = obj.tagsAsString.replace(',', ' ').split(' ');
+            obj.tags = tags;
+            obj.defaultEventValue = parseFloat(obj.defaultEventValue);
+            delete obj.tagsAsString;
+            this.model.set(obj);
+
+            if (this.model.hasChanged() == true) {
+               this.model.save({wait: true});
+               this.onSumbitted(this.model.attributes);
+            } else {
+                navigateToActivityPage();
+            }
+
             $(this.el).find(":button[name='submit']").enableButton();
         },
 

@@ -98,7 +98,7 @@ function sendCheckIn(requestParamObj, successHandler, errorHandler) {
 
 
 Backbone.sync = function (method, model, options) {
-    console.log(method + model + options);
+    console.log(method + model + " " + model.urlRoot + options);
 
     switch (model.urlRoot) {
         case '/service/settings':
@@ -118,6 +118,23 @@ Backbone.sync = function (method, model, options) {
                 }});
 
             break;
+        case "/service/activities":
 
+            $.ajax({
+                url: "/service/activity." + method,
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                dataType: 'json',
+                async : false,
+                data: JSON.stringify(model.toJSON()),
+                success: function (data) {
+                    model.set(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('request failed : ' + errorThrown);
+                }});
+
+
+            break;
     }
 };

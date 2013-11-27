@@ -109,6 +109,9 @@ var AppState = {
     findActivity: function (activityCode) {
         return _.where(AppState.activities(), {code: activityCode})[0];
     },
+    findActivityById: function (activityId) {
+        return _.where(AppState.activities(), {id: activityId})[0];
+    },
     checkAndLoadEvents: function () {
         if (!AppState._events) {
             requestEvents(function (data){
@@ -129,6 +132,19 @@ var AppState = {
             $.extend(existedEvent, event);
         } else {
             AppState.events().push(event)
+        }
+    },
+    addOrUpdateActivity: function (activity) {
+        if (!AppState._activities) {
+            AppState._activities = [activity];
+        } else {
+            var exitedActivity = AppState.findActivityById(activity.id);
+            if (exitedActivity) {
+                $.extend(exitedActivity, activity);
+            } else {
+                AppState._activities.push(activity);
+            }
+
         }
     }
 
