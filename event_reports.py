@@ -77,7 +77,7 @@ def SendEmailDailyReport(currentUser, email, fromDate, toDate):
 
     htmlOut.write("</table>")
 
-    mail.send_mail(sender="denis.rykovanov@gmail.com",
+    mail.send_mail(sender="chaos.lab.games@gmail.com",
                   to=email,
                   subject="Time report: %s - %s" % (fromDate.strftime("%Y-%m-%d"), toDate.strftime("%Y-%m-%d")),
                   body='see html email',
