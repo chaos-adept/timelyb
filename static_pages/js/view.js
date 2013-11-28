@@ -329,10 +329,10 @@
             "click .weekBtn": "setupWeekValues",
             "click .monthBtn": "setupMonthValues"
         },
-
+        //fixme variable names
         setupTodayValues: function() {
-            var currentDate = moment();
-            var tomorrow = moment().add('days', 1);
+            var currentDate = moment().add('days', 1);
+            var tomorrow = moment();
 
             this.setupInputValuesByDates(currentDate, tomorrow);
         },
@@ -382,7 +382,7 @@
         submit: function () {
             $(this.el).find(":button[name='submit']").disableButton();
 
-            var obj = $("form[name='inputValueForm']").serializeObject();
+            var obj =  $(this.el).find("form[name='inputValueForm']").serializeObject();
 
             var fromDate = moment({year: obj.startYear, month: obj.startMonth, day: obj.startDay});
             var toDate = moment({year: obj.endYear, month: obj.endMonth, day: obj.endDay});

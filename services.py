@@ -213,7 +213,7 @@ class ReportRequestService(remote.Service):
         user = users.get_current_user()
         email = user.email()
         fromDate = parseMsgTime(request.fromDate)
-        toDate = parseMsgTime(request.fromDate)
+        toDate = parseMsgTime(request.toDate)
         taskqueue.add(url='/reportWorker', method='GET', params={'email': email, 'fromDate':fromDate, 'toDate':toDate, 'type': 'dateSpan'})
         return RequestReportResponseMessage(message = 'report from %s to %s, email is going to be sent at %s' % (fromDate, toDate, email))
 
