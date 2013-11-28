@@ -25,7 +25,7 @@ class ReportPlannerPage(webapp2.RequestHandler):
         utcDateTrimmed = datetime.datetime.combine(utcDate, datetime.time(0,0))
 
         eta = utcDateTrimmed + datetime.timedelta(days = 1) - datetime.timedelta(hours = settings.timeZoneOffset)
-        taskqueue.add(url='/reportWorker', method='GET', params={'email': settings.email, 'days':days}, eta = eta)
+        taskqueue.add(url='/reportWorker', method='GET', params={'email': settings.email, 'days':days - 1}, eta = eta)
         pass
 
     def get(self):
