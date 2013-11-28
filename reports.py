@@ -48,7 +48,7 @@ class ReportWorker(webapp2.RequestHandler):
     def dateSpanReport(self):
         email = self.request.get('email')
 
-        dateFormat = '%Y-%m-%d 00:00:00'
+        dateFormat = '%Y-%m-%d %H:%M:%S'
 
         fromDate = datetime.datetime.strptime(self.request.get('fromDate'), dateFormat)
         toDate = datetime.datetime.strptime(self.request.get('toDate'), dateFormat)

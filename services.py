@@ -10,6 +10,7 @@ from model import *
 
 from google.appengine.api import users
 from google.appengine.ext import ndb, deferred
+from google.appengine.api.taskqueue import taskqueue
 
 import datetime
 
@@ -54,6 +55,14 @@ class SettingsMessage(messages.Message):
     timeZoneOffset = messages.IntegerField(1, required=False)
     logoutUrl = messages.StringField(2, required=False)
     nickname = messages.StringField(3, required=False)
+
+class RequestReportMessage(messages.Message):
+    fromDate = messages.StringField(1, required=True)
+    toDate = messages.StringField(2, required=True)
+
+class RequestReportResponseMessage(messages.Message):
+    message = messages.StringField(1, required=False)
+
 
 def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
@@ -198,6 +207,17 @@ class ActivityService(remote.Service):
         return self.addActivity(request)
 
 
+class ReportRequestService(remote.Service):
+    @remote.method(RequestReportMessage, RequestReportResponseMessage)
+    def request(self, request):
+        user = users.get_current_user()
+        email = user.email()
+        fromDate = parseMsgTime(request.fromDate)
+        toDate = parseMsgTime(request.fromDate)
+        taskqueue.add(url='/reportWorker', method='GET', params={'email': email, 'fromDate':fromDate, 'toDate':toDate, 'type': 'dateSpan'})
+        return RequestReportResponseMessage(message = 'report from %s to %s, email is going to be sent at %s' % (fromDate, toDate, email))
 
 
-app = service.service_mappings([('/service/event', EventService), ('/service/settings', SettingsService), ('/service/activity', ActivityService)])
+
+
+app = service.service_mappings([('/service/event', EventService), ('/service/settings', SettingsService), ('/service/activity', ActivityService), ('/service/reportRequest', ReportRequestService)])

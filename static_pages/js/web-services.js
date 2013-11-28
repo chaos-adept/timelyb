@@ -41,6 +41,33 @@ function requestActivities(successHandler, errorHandler, sync) {
             });
 }
 
+function requestEventsReport(fromDate, toDate) {
+    notifyRequestStarted();
+
+            $.ajax({
+                url: "/service/reportRequest.request",
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                async : 'false',
+                dataType: 'json',
+                data: JSON.stringify({
+                    fromDate: fromDate.toISOString(),
+                    toDate: toDate.toISOString()
+                }),
+                success: function (data) {
+                    alert(data.message);
+                    notifyRequestCompleted();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var responseText = (jqXHR.responseText);
+                    alert(textStatus + ", " + errorThrown + ' , ' + responseText );
+
+                    notifyRequestCompleted();
+
+                }
+            });
+}
+
 function requestEvents(successHandler) {
     notifyRequestStarted();
 

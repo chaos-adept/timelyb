@@ -384,7 +384,10 @@
 
             var obj = $("form[name='inputValueForm']").serializeObject();
 
+            var fromDate = moment({year: obj.startYear, month: obj.startMonth, day: obj.startDay});
+            var toDate = moment({year: obj.endYear, month: obj.endMonth, day: obj.endDay});
 
+            requestEventsReport(fromDate, toDate);
             //navigateToActivityPage();
 
             $(this.el).find(":button[name='submit']").enableButton();
