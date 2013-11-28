@@ -47,3 +47,7 @@ function notifyRequestCompleted() {
     $('.progress-indicator').css( 'display', 'none' );
 }
 
+function setWindowTitle(title) {
+    $(document).attr("title", title);
+}
+

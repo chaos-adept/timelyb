@@ -17,14 +17,17 @@
         },
 
         activities: function () {
-
+            setWindowTitle("Activities");
             AppState.checkAndLoadActivities();
 
             Views.activities.render();
         },
 
         logEvent: function (code) {
+
             AppState.startDate = moment();
+
+            setWindowTitle("'" + code + "', since " + AppState.startDate.format("HH:mm"));
 
             AppState.checkAndLoadActivities();
 
