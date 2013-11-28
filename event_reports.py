@@ -7,9 +7,14 @@ __author__ = 'WORKSATION'
 import logging
 import model
 from model import Event
+from model import Settings
 from google.appengine.ext import deferred, ndb
 
 BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
+
+
+class PreFormattedEvent(object):
+    pass
 
 
 def formatTimeDelta(delta):
@@ -19,16 +24,24 @@ def formatTimeDelta(delta):
     # Formatted only for hours and minutes as requested
     return '%s:%s:%s' % (hours, minutes, seconds)
 
-def dateToStr(date):
-    return date.strftime("%Y-%m-%d %H:%M:%S")
+def dateToStr(date, timeZoneOffset):
+    return (date + datetime.timedelta(hours = timeZoneOffset)).strftime("%Y-%m-%d %H:%M:%S")
 
 def activityToCvs(event):
-    span = formatTimeDelta(event.endTime - event.startTime)
-    return "%s, %s, %s, %s, %s, %s" % (event.actor.nickname(), event.activityCode, span, event.value, dateToStr(event.startTime), dateToStr(event.endTime))
+    return "%s, %s, %s, %s, %s, %s" % (event.nickname, event.activityCode, event.timeSpanAsStr, event.value, event.startTimeAsStr, event.endTimeAsStr)
 
 def activityToHtmlRow(event):
-    span = formatTimeDelta(event.endTime - event.startTime)
-    return "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (event.actor.nickname(), event.activityCode, span, event.value, dateToStr(event.startTime), dateToStr(event.endTime))
+    return "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (event.nickname, event.activityCode, event.timeSpanAsStr, event.value, event.startTimeAsStr, event.endTimeAsStr)
+
+def itemToPreFormattedItem(event, settings):
+    formatted = PreFormattedEvent()
+    formatted.nickname = event.actor.nickname()
+    formatted.startTimeAsStr = dateToStr(event.startTime, settings.timeZoneOffset)
+    formatted.endTimeAsStr = dateToStr(event.endTime, settings.timeZoneOffset)
+    formatted.timeSpanAsStr = formatTimeDelta(event.endTime - event.startTime)
+    formatted.activityCode = event.activityCode
+    formatted.value = event.value
+    return formatted
 
 def SendEmailDailyReport(currentUser, email, fromDate, toDate):
 
@@ -52,9 +65,12 @@ def SendEmailDailyReport(currentUser, email, fromDate, toDate):
 
     htmlOut.write("<table border=\"1\">")
 
+    settings = Settings.singletonForUser(currentUser)
+
     items = query.fetch(BATCH_SIZE)
-    html_items = map(activityToHtmlRow, items)
-    cvs_items =  map(activityToCvs, items)
+    preFormatedItems = map(lambda (event): itemToPreFormattedItem(event, settings), items)
+    html_items = map(activityToHtmlRow, preFormatedItems)
+    cvs_items =  map(activityToCvs, preFormatedItems)
 
     htmlOut.write("\n\r".join(html_items))
     cvsOut.write("\n\r".join(cvs_items))
