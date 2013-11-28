@@ -79,7 +79,7 @@ def SendEmailDailyReport(currentUser, email, fromDate, toDate):
 
     mail.send_mail(sender="denis.rykovanov@gmail.com",
                   to=email,
-                  subject="Time report since %s " % fromDate.strftime("%Y-%m-%d"),
+                  subject="Time report: %s - %s" % (fromDate.strftime("%Y-%m-%d"), toDate.strftime("%Y-%m-%d")),
                   body='see html email',
                   html=htmlOut.getvalue(),
                   attachments=[('report.csv'), (cvsOut.getvalue())])
