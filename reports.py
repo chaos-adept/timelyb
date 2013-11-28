@@ -19,6 +19,13 @@ import logging
 
 class ReportWorker(webapp2.RequestHandler):
     def get(self):
+        if (str(self.request.get('type')) == 'dateSpan'):
+            self.dateSpanReport()
+        else:
+            self.daily()
+        pass
+
+    def daily(self):
         email = self.request.get('email')
         days = int(self.request.get('days'))
 
@@ -37,6 +44,27 @@ class ReportWorker(webapp2.RequestHandler):
         toDate = utcDateTrimmed - datetime.timedelta(days=days-1) - timeZoneDelta
 
         event_reports.SendEmailDailyReport(user, email, fromDate, toDate)
+
+    def dateSpanReport(self):
+        email = self.request.get('email')
+
+        dateFormat = '%Y-%m-%d 00:00:00'
+
+        fromDate = datetime.datetime.strptime(self.request.get('fromDate'), dateFormat)
+        toDate = datetime.datetime.strptime(self.request.get('toDate'), dateFormat)
+
+        user = User(email = email)
+
+        settings = Settings.singletonForUser(user)
+
+        timeZoneDelta = datetime.timedelta(hours=settings.timeZoneOffset)
+
+        fromDateUTC =  fromDate - timeZoneDelta
+        toDateUTC = toDate - timeZoneDelta
+
+        event_reports.SendEmailDailyReport(user, email, fromDateUTC, toDateUTC)
+        pass
+
 
 class ReportPlannerPage(webapp2.RequestHandler):
 
