@@ -6,6 +6,24 @@
  * To change this template use File | Settings | File Templates.
  */
 
+$.fn.formValuesFromObj = function (data) {
+    $.each(data, function(name, val){
+    var $el = $('[name="'+name+'"]'),
+        type = $el.attr('type');
+
+    switch(type){
+        case 'checkbox':
+            $el.attr('checked', 'checked');
+            break;
+        case 'radio':
+            $el.filter('[value="'+val+'"]').attr('checked', 'checked');
+            break;
+        default:
+            $el.val(val);
+    }
+});
+};
+
 $.fn.disableButton = function () {
     this.attr("disabled", "disabled");
 };

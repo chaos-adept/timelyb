@@ -54,6 +54,7 @@
         <a href="#activities/add">+Activity</a> |
         <a href="#addEvent">+Event</a> |
         <a href="#events/recent">Recent</a> |
+        <a href="#reports/request">Reports</a> |
         <a href="#settings">Settings</a>
     </div>
     <hr/>
@@ -148,7 +149,7 @@
 
 
 <script type="text/template" id="settingsPageView">
-    <he />
+    <hr />
         <%= AppState.settings.get('nickname') %> | <a href="<%= AppState.settings.get('logoutUrl') %>" > logout </a>
     <hr />
 
@@ -157,8 +158,37 @@
             Time-zone offset: <input class="timeZoneInput" name="timeZoneOffset" value="<%= AppState.settings.get('timeZoneOffset') %>" />
         </form>
         <input type="button" name="cancel" value="Cancel"/>
-        <input type="button" name="save" value="Save"/>
+        <input type="button" name="request" value="Request"/>
     </div>
+</script>
+
+<script type="text/template" id="requestReport">
+
+    <hr/>
+    <a href="javascript:void(0)" class="todayBtn">today</a> |
+    <a href="javascript:void(0)" class="yesterdayBtn">yesterday</a> |
+    <a href="javascript:void(0)" class="weekBtn">week</a> |
+    <a href="javascript:void(0)" class="monthBtn">month</a>
+    <hr/>
+
+    <form>
+        from:<br/>
+        <input type="number" maxlength="4" size="4" name="startYear" placeholder="YYYY" />
+        <input type="number" maxlength="2" size="2" name="startMonth" placeholder="MM" />
+        <input type="number" maxlength="2" size="2" name="startDay" placeholder="DD" />
+        <br/>
+        to:
+        <br/>
+
+        <input type="number" maxlength="4" size="4" name="endYear" placeholder="YYYY" />
+        <input type="number" maxlength="2" size="2" name="endMonth" placeholder="MM" />
+        <input type="number" maxlength="2" size="2" name="endDay" placeholder="DD" />
+
+    </form>
+
+<br/>
+        <input type="button" name="cancel" value="Cancel"/>
+        <input type="button" name="save" value="Save"/>
 </script>
 
 <!-- Блок ошибки -->

@@ -317,6 +317,93 @@
         }
     });
 
+    RequestReportView = Backbone.View.extend({
+        tagName: "div", // DOM элемент widget'а
+        template: _.template($('#requestReport').html()),
+
+        events: {
+            "click :button[name='request']": "submit",
+            "click :button[name='cancel']": "cancel",
+            "click .todayBtn": "setupTodayValues",
+            "click .yesterdayBtn": "setupYesterdayValues",
+            "click .weekBtn": "setupWeekValues",
+            "click .monthBtn": "setupMonthValues"
+        },
+
+        setupTodayValues: function() {
+            var currentDate = moment();
+            var tomorrow = moment().add('days', 1);
+
+            this.setupInputValuesByDates(currentDate, tomorrow);
+        },
+
+        setupYesterdayValues: function() {
+            var currentDate = moment();
+            var yesterdayDate = moment().subtract('days', 1);
+
+            this.setupInputValuesByDates(currentDate, yesterdayDate);
+        },
+
+        setupWeekValues: function() {
+            var currentDate = moment();
+            var week = moment().subtract('weeks', 1);
+            this.setupInputValuesByDates(currentDate, week);
+        },
+
+        setupMonthValues: function() {
+            var currentDate = moment();
+            var month = moment().subtract('months', 1);
+            this.setupInputValuesByDates(currentDate, month);
+        },
+
+        setupInputValuesByDates: function (fromDate, toDate) {
+            var data = {};
+            data.startYear = toDate.year();
+            data.startMonth = toDate.month();
+            data.startDay = toDate.date();
+
+            data.endYear = fromDate.year();
+            data.endMonth = fromDate.month();
+            data.endDay = fromDate.date();
+
+            this.timeObjToFormValues(data);
+        },
+
+        timeObjToFormValues: function (data) {
+            $("form[name='inputValueForm']").formValuesFromObj(data);
+        },
+
+        addToStage: function () {
+            $("#block").empty();
+            this.render();
+            $("#block").append(this.el);
+        },
+
+        submit: function () {
+            $(this.el).find(":button[name='submit']").disableButton();
+
+            var obj = $("form[name='inputValueForm']").serializeObject();
+
+
+            //navigateToActivityPage();
+
+            $(this.el).find(":button[name='submit']").enableButton();
+        },
+
+
+        onSumbitted: function (activity) {
+            navigateToActivityPage();
+        },
+
+        cancel: function () {
+            navigateToActivityPage();
+        },
+
+        render: function () {
+            $(this.el).html(this.template(AppState));
+        }
+    });
+
     Views = {
         start: new Start(),
         success: new Success(),

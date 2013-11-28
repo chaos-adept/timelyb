@@ -12,6 +12,7 @@
             "activities": "activities",
             "activities/add": "addActivityPage",
             "activities/edit/:activityCode": "editActivityPage",
+            "reports/request": 'requestReportPage',
             "settings": "settings"
 
         },
@@ -62,6 +63,11 @@
             model.set(activity);
             var editModelView = new EditActivityView({model: model});
             editModelView.addToStage();
+        },
+
+        requestReportPage: function() {
+          var requestReportView = new RequestReportView();
+          requestReportView.addToStage();
         },
 
         settings: function () {
