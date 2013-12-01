@@ -17,6 +17,7 @@ BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
 PIE_CHART_TEMPLATE_HEADER = '''
 <html>
   <head>
+    <meta charset="utf-8">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
