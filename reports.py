@@ -55,14 +55,7 @@ class ReportWorker(webapp2.RequestHandler):
 
         user = User(email = email)
 
-        settings = Settings.singletonForUser(user)
-
-        timeZoneDelta = datetime.timedelta(hours=settings.timeZoneOffset)
-
-        fromDateUTC =  fromDate - timeZoneDelta
-        toDateUTC = toDate - timeZoneDelta
-
-        event_reports.SendEmailDailyReport(user, email, fromDateUTC, toDateUTC)
+        event_reports.SendEmailDailyReport(user, email, fromDate, toDate)
         pass
 
 
