@@ -38,4 +38,9 @@ indexes:
   properties:
   - name: actor
   - name: startTime
+
+- kind: Event
+  properties:
+  - name: actor
+  - name: startTime
     direction: desc

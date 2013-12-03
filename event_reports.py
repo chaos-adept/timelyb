@@ -72,12 +72,16 @@ def activityToCvs(event):
 def activityToHtmlRow(event):
     return "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (event.nickname, event.activityCode, event.timeSpanAsStr, event.value, event.startTimeAsStr, event.endTimeAsStr)
 
-def itemToPreFormattedItem(event, settings):
+def itemToPreFormattedItem(event, settings, fromDate, toDate):
     formatted = PreFormattedEvent()
     formatted.nickname = event.actor.nickname()
-    formatted.startTimeAsStr = dateToStr(event.startTime, settings.timeZoneOffset)
-    formatted.endTimeAsStr = dateToStr(event.endTime, settings.timeZoneOffset)
-    formatted.timeSpan = event.endTime - event.startTime
+
+    startTime = max(fromDate, event.startTime)#lambda (): if (fromDate < event.startTime) : fromDate else: event.startTime
+    endTime = min(toDate, event.endTime)
+
+    formatted.startTimeAsStr = dateToStr(startTime, settings.timeZoneOffset)
+    formatted.endTimeAsStr = dateToStr(endTime, settings.timeZoneOffset)
+    formatted.timeSpan = endTime - startTime
     formatted.timeSpanAsStr = formatTimeDelta(formatted.timeSpan)
     formatted.activityCode = event.activityCode
     formatted.value = event.value
@@ -88,29 +92,52 @@ def summaryItemToDataItemRow(value):
 
 def SendEmailDailyReport(currentUser, email, fromDate, toDate):
 
-    cursor = None
+    #todo refactor
+
+    cursor_inDateRange = None
+    cursor_outDateRange = None
+    queryEndInDateRange = None
+    queryStartInDateRange = None
 
     try:
-        query = Event.query(
-                Event.actor == currentUser,
-                Event.endTime >= fromDate,
-                Event.endTime <= toDate).order(Event.endTime)
+        queryEndInDateRange = Event.query(
+            Event.actor == currentUser,
+            (ndb.AND(Event.endTime >= fromDate,
+                           Event.endTime < toDate)),
+
+        ).order(Event.endTime)
+
+        queryStartInDateRange = Event.query(
+            Event.actor == currentUser,
+            Event.startTime >= fromDate
+        ).order(-Event.startTime) # the only event could be started and not completed in range with max time
+
+
+                   # ndb.AND(Event.endTime < toDate,
+                   #         Event.endTime > toDate)
     except:
         logging.info('error cant be prepared %s', sys.exc_info()[0])
 
         pass
 
 
-    if cursor:
-        query.with_cursor(cursor)
+    if cursor_inDateRange:
+        queryEndInDateRange.with_cursor(cursor_inDateRange)
 
-
+    if cursor_outDateRange:
+        queryStartInDateRange.with_cursor(cursor_outDateRange)
 
     settings = Settings.singletonForUser(currentUser)
 
-    items = query.fetch(BATCH_SIZE)
+    inRangeItems = queryEndInDateRange.fetch(BATCH_SIZE)
+    outRangeItems = queryStartInDateRange.fetch(1) # the only event could be started and not completed in range with max time
+    outRangeItem = outRangeItems[0]
+    if (outRangeItem.endTime > toDate):
+        outRangeItem.endTime = toDate
+        inRangeItems.append(outRangeItem)
 
-    preFormatedItems = map(lambda (event): itemToPreFormattedItem(event, settings), items)
+
+    preFormatedItems = map(lambda (event): itemToPreFormattedItem(event, settings, fromDate, toDate), inRangeItems)
 
     summary = {}
 
