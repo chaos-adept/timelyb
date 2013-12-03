@@ -132,7 +132,7 @@ def SendEmailDailyReport(currentUser, email, fromDate, toDate):
     inRangeItems = queryEndInDateRange.fetch(BATCH_SIZE)
     outRangeItems = queryStartInDateRange.fetch(1) # the only event could be started and not completed in range with max time
     outRangeItem = outRangeItems[0]
-    if (outRangeItem.endTime > toDate):
+    if ((outRangeItem.startTime < toDate) and (outRangeItem.endTime > toDate)):
         outRangeItem.endTime = toDate
         inRangeItems.append(outRangeItem)
 
