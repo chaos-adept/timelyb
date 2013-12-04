@@ -26,14 +26,17 @@
 
         logEvent: function (code) {
 
-            AppState.startDate = moment();
+            //AppState.startDate = moment();
 
-            setWindowTitle("'" + code + "', since " + AppState.startDate.format("HH:mm"));
+            currentActivity = AppState.findActivity(code);
 
-            AppState.checkAndLoadActivities();
-
-            AppState.currentActivity = AppState.findActivity(code);
+            AppState.startedEvent = new StartedEvent({activityCode:code, eventValue: currentActivity.defaultEventValue, startTime:moment()});
             console.debug("name: " + code );
+
+            setWindowTitle("'" + code + "', since " + AppState.startedEvent.startTime.format("HH:mm"));
+
+            AppState.startedEvent.save();
+
             Views.logEvent.render();
         },
 

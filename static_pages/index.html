@@ -67,15 +67,15 @@
     <table>
         <tr>
             <td>activity</td>
-            <td><strong> <%= currentActivity.code %> </strong></td>
+            <td><strong> <%= activityCode %> </strong></td>
         </tr>
         <tr>
             <td> startTime</td>
-            <td><strong> <%= startDate.format('MM-DD HH:mm') %> </strong></td>
+            <td><strong> <%= startTime.format('MM-DD HH:mm') %> </strong></td>
         </tr>
         <tr>
             <td> value</td>
-            <td><input type="number" name="value" value="<%= currentActivity.defaultEventValue %>" placeholder="value"/>
+            <td><input type="number" name="value" value="<%= eventValue %>" placeholder="value"/>
             </td>
         </tr>
         <tr>

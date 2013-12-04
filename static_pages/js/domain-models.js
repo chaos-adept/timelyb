@@ -42,6 +42,16 @@ var ActivityModel = Backbone.Model.extend({
     }
 });
 
+var StartedEvent = Backbone.Model.extend({
+    constructor: function(args) {
+        this.urlRoot = "/service/startedEvents";
+        this.activityCode = args.activityCode;
+        this.eventValue = args.eventValue;
+        this.startTime = args.startTime;
+        Backbone.Model.apply(this, arguments);
+    }
+});
+
 var AddEventRequestModel = Backbone.Model.extend({
   constructor: function(event) {
     var currentDate = moment();
