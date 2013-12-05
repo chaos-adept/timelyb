@@ -192,5 +192,31 @@ Backbone.sync = function (method, model, options) {
 
 
             break;
+        case "/service/startedEvents":
+            notifyRequestStarted();
+            $.ajax({
+                url: "/service/startedEvents." + method,
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                dataType: 'json',
+                async : false,
+                data: method == "delete" ? JSON.stringify({id:model.get('id')}) : JSON.stringify(model.toJSON()),
+                success: function (data) {
+                    notifyRequestCompleted();
+                    data.startTime = moment(data.startTime);
+                    model.set(data);
+                    if (options && options.success) {
+                        options.success(model)
+                    }
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    notifyRequestCompleted();
+                    alert('request failed : ' + errorThrown);
+                    if (options && options.success) {
+                        options.error(arguments)
+                    }
+                }});
+            break;
     }
 };

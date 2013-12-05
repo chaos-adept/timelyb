@@ -28,6 +28,7 @@
             );
         },
         cancel: function () {
+            AppState.startedEvent.destroy();
             navigateToActivityPage();
         },
         render: function () {

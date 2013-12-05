@@ -63,6 +63,11 @@ class RequestReportMessage(messages.Message):
 class RequestReportResponseMessage(messages.Message):
     message = messages.StringField(1, required=False)
 
+class StartedEventMessage(messages.Message):
+    startTime = messages.StringField(1, required=False)
+    eventValue = messages.FloatField(2, required=False)
+    activityCode = messages.StringField(3, required=False)
+    id = messages.StringField(4, required=False)
 
 def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
@@ -218,6 +223,59 @@ class ReportRequestService(remote.Service):
         return RequestReportResponseMessage(message = 'a Report from UTC:%s to UTC:%s. Report Email is %s' % (fromDate, toDate, email))
 
 
+def startedEventToMessage(startedEvent):
+    return StartedEventMessage(id=startedEvent.key.urlsafe(), startTime=startedEvent.startTime.isoformat(),
+                               eventValue=startedEvent.eventValue, activityCode=startedEvent.activityCode)
 
 
-app = service.service_mappings([('/service/event', EventService), ('/service/settings', SettingsService), ('/service/activity', ActivityService), ('/service/reportRequest', ReportRequestService)])
+def messageToStartedEvent(startedEventMsg):
+    return StartedEvent(actor = users.get_current_user(), startTime=parseMsgTime(startedEventMsg.startTime),
+                               eventValue=startedEventMsg.eventValue, activityCode=startedEventMsg.activityCode)
+
+
+
+class StartedEventService(remote.Service):
+
+    def getExistedStartedEvent(self):
+        qry = StartedEvent.query(StartedEvent.actor == users.get_current_user())
+        items = qry.map(startedEventToMessage, limit = 1)
+        if (len(items) == 0):
+            return None
+        else:
+            return items[0]
+
+    @remote.method(StartedEventMessage, StartedEventMessage)
+    def create(self, request):
+        existed = self.getExistedStartedEvent()
+        if (existed):
+            return existed
+
+        startedEvent = messageToStartedEvent(request)
+        startedEvent.put()
+        return startedEventToMessage(startedEvent)
+
+    @remote.method(StartedEventMessage, StartedEventMessage)
+    def update(self, request):
+        startedEvent = Key(urlsafe = request.id).get()
+        startedEvent.startTime = parseMsgTime(request.startTime)
+        startedEvent.eventValue = request.eventValue
+        startedEvent.activityCode = request.activityCode
+        startedEvent.put()
+        return (request)
+
+    @remote.method(StartedEventMessage, StartedEventMessage)
+    def read(self, request):
+        startedEvent = Key(urlsafe = request.id).get()
+        return startedEventToMessage(startedEvent)
+
+    @remote.method(StartedEventMessage, StartedEventMessage)
+    def delete(self, request):
+        Key(urlsafe = request.id).delete()
+        return request
+
+app = service.service_mappings(
+    [('/service/event', EventService),
+     ('/service/settings', SettingsService),
+     ('/service/activity', ActivityService),
+     ('/service/reportRequest', ReportRequestService),
+     ('/service/startedEvents', StartedEventService)])

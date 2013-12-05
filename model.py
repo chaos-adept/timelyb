@@ -11,6 +11,12 @@ class Event(ndb.Model):
     value = ndb.FloatProperty(required=True)
     activityCode = ndb.StringProperty(indexed=True, required=True) #activity code
 
+class StartedEvent(ndb.Model):
+    actor = ndb.UserProperty(indexed=True, required=True)
+    startTime = ndb.DateTimeProperty(indexed=True, required=True)
+    eventValue = ndb.FloatProperty(required=True)
+    activityCode = ndb.StringProperty(indexed=True, required=True) #activity code
+
 class Activity(ndb.Model):
     actor = ndb.UserProperty(indexed=True, required=True)
     code = ndb.StringProperty(indexed=True, required=True)

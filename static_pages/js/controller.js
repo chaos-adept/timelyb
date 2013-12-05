@@ -30,14 +30,17 @@
 
             currentActivity = AppState.findActivity(code);
 
-            AppState.startedEvent = new StartedEvent({activityCode:code, eventValue: currentActivity.defaultEventValue, startTime:moment()});
+            var startedEvent = new StartedEvent({activityCode:code, eventValue: currentActivity.defaultEventValue, startTime:moment()});
             console.debug("name: " + code );
 
-            setWindowTitle("'" + code + "', since " + AppState.startedEvent.startTime.format("HH:mm"));
-
-            AppState.startedEvent.save();
-
-            Views.logEvent.render();
+            startedEvent.save(undefined, {success:function(startedEvent){
+                AppState.startedEvent = startedEvent;
+                setWindowTitle("'" + code + "', since " + startedEvent.startTime.format("HH:mm"));
+                Views.logEvent.render();
+            }, error:function (){
+                console.debug("error: " + code );
+                navigateToActivityPage();
+            }});
         },
 
         addEventPage: function() {
