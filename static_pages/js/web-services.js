@@ -41,6 +41,46 @@ function requestActivities(successHandler, errorHandler, sync) {
             });
 }
 
+function requestStartedEvent(successHandler, errorHandler) {
+    notifyRequestStarted();
+
+            $.ajax({
+                url: "/service/startedEvents.getStartedEvent",
+                contentType: 'application/json; charset=utf-8',
+                type: "POST",
+                async : false,
+                dataType: 'json',
+                data: JSON.stringify({
+                }),
+                success: function (data) {
+                    var startedEvent = data.startedEvent
+                    if (startedEvent) {
+                        startedEvent.startTime = moment(startedEvent.startTime);
+                        var d = new Date();
+                        var n = -d.getTimezoneOffset() / 60;
+                        startedEvent.startTime = startedEvent.startTime.add('hours', n);
+                        startedEvent = new StartedEvent(startedEvent);
+                        successHandler(startedEvent);
+                    } else {
+                        successHandler(undefined);
+                    }
+
+
+
+                    notifyRequestCompleted();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+
+                    notifyRequestCompleted();
+                    if (errorHandler) {
+                        errorHandler(textStatus + ", " + errorThrown);
+                    }
+
+
+                }
+            });
+}
+
 function requestEventsReport(fromDate, toDate) {
     notifyRequestStarted();
 

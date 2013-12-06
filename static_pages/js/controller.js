@@ -6,6 +6,7 @@
             "error": "error", // Блок ошибки
             //"logEvent/:name/:startDate": "logEvent",
             "logEvent/:name": "logEvent",
+            "continue": "continueStartedEvent",
             "addEvent": "addEventPage",
             "event/edit/:id": "editEventPage",
             "events/recent": "recentEvents",
@@ -20,14 +21,35 @@
         activities: function () {
             setWindowTitle("Activities");
             AppState.checkAndLoadActivities();
+            if (AppState.justSubmitedEvent == false) {
+                AppState.checkAndLoadStartedEvent();
+                if (AppState.startedEvent) {
+                    navigateToStartedEvent();
+                } else {
+                    showActivities();
+                }
+            } else {
+                AppState.justSubmitedEvent = false;
+                showActivities();
+            }
 
-            Views.activities.render();
+
+            function showActivities() {
+                Views.activities.render();
+            }
+
         },
 
         logEvent: function (code) {
 
             //AppState.startDate = moment();
 
+            AppState.checkAndLoadStartedEvent();
+            if (AppState.startedEvent) {
+                code = AppState.startedEvent.activityCode;
+                showStartedEvent();
+                return true;
+            }
             currentActivity = AppState.findActivity(code);
 
             var startedEvent = new StartedEvent({activityCode:code, eventValue: currentActivity.defaultEventValue, startTime:moment()});
@@ -35,12 +57,27 @@
 
             startedEvent.save(undefined, {success:function(startedEvent){
                 AppState.startedEvent = startedEvent;
-                setWindowTitle("'" + code + "', since " + startedEvent.startTime.format("HH:mm"));
-                Views.logEvent.render();
+                showStartedEvent();
             }, error:function (){
                 console.debug("error: " + code );
                 navigateToActivityPage();
             }});
+
+            return true;
+
+            function showStartedEvent() {
+                setWindowTitle("'" + code + "', since " + AppState.startedEvent.startTime.format("HH:mm"));
+                Views.logEvent.render();
+            }
+        },
+
+        continueStartedEvent: function () {
+            if (AppState.startedEvent) {
+                this.logEvent();
+            } else {
+                navigateToActivityPage();
+            }
+
         },
 
         addEventPage: function() {

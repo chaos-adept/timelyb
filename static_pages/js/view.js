@@ -21,6 +21,8 @@
                     startDate: AppState.startedEvent.get('startTime'),
                     endDate: new Date()}, //todo it should be momentum time
             function (){
+                AppState.startedEvent = null;
+                AppState.justSubmitedEvent = true;
                 navigateToActivityPage();
             }, function (){
                 $(that.el).find(":button[name='checkIn']").enableButton();
@@ -29,6 +31,7 @@
         },
         cancel: function () {
             AppState.startedEvent.destroy();
+            AppState.startedEvent = null;
             navigateToActivityPage();
         },
         render: function () {

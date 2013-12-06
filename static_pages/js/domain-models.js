@@ -100,6 +100,7 @@ var AddEventRequestModel = Backbone.Model.extend({
 
 var AppState = {
     username: "",
+    justSubmitedEvent: false,
     _activities: null,
     settings: new SettingsModel(),
     checkAndLoadActivities: function () {
@@ -155,6 +156,13 @@ var AppState = {
                 AppState._activities.push(activity);
             }
 
+        }
+    },
+    checkAndLoadStartedEvent: function () {
+        if (!AppState.startedEvent) {
+            requestStartedEvent(function (startedEvent) {
+                AppState.startedEvent = startedEvent
+            })
         }
     }
 

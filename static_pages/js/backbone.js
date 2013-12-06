@@ -12,3 +12,7 @@ $(function () {
 function navigateToActivityPage() {
     controller.navigate("activities", true);
 }
+
+function navigateToStartedEvent() {
+    controller.navigate("continue", true)
+}

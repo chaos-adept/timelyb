@@ -27,7 +27,7 @@ class EventMessage(messages.Message):
 class LogEventResponse(messages.Message):
     message = messages.StringField(1, required=True)
 
-class ActivitiesRequest(messages.Message):
+class EmptyRequest(messages.Message):
     pass
 
 class EventListRequest(messages.Message):
@@ -68,6 +68,9 @@ class StartedEventMessage(messages.Message):
     eventValue = messages.FloatField(2, required=False)
     activityCode = messages.StringField(3, required=False)
     id = messages.StringField(4, required=False)
+
+class CheckStartedEventMessage(messages.Message):
+    startedEvent = messages.MessageField(message_type=StartedEventMessage, required=False, number=1)
 
 def parseMsgTime(time):
     return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
@@ -117,7 +120,7 @@ class EventService(remote.Service):
 
         return eventToMessage(event)
 
-    @remote.method(ActivitiesRequest, ActivitiesResponse)
+    @remote.method(EmptyRequest, ActivitiesResponse)
     def activities(self, request):
         qry = Activity.query(Activity.actor == users.get_current_user())
 
@@ -224,8 +227,11 @@ class ReportRequestService(remote.Service):
 
 
 def startedEventToMessage(startedEvent):
-    return StartedEventMessage(id=startedEvent.key.urlsafe(), startTime=startedEvent.startTime.isoformat(),
-                               eventValue=startedEvent.eventValue, activityCode=startedEvent.activityCode)
+    if (startedEvent):
+        return StartedEventMessage(id=startedEvent.key.urlsafe(), startTime=startedEvent.startTime.isoformat(),
+                                   eventValue=startedEvent.eventValue, activityCode=startedEvent.activityCode)
+    else:
+        return None
 
 
 def messageToStartedEvent(startedEventMsg):
@@ -243,6 +249,11 @@ class StartedEventService(remote.Service):
             return None
         else:
             return items[0]
+
+    @remote.method(EmptyRequest, CheckStartedEventMessage)
+    def getStartedEvent(self, request):
+        return CheckStartedEventMessage(startedEvent=self.getExistedStartedEvent())
+
 
     @remote.method(StartedEventMessage, StartedEventMessage)
     def create(self, request):
