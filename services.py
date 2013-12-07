@@ -69,6 +69,10 @@ class StartedEventMessage(messages.Message):
     activityCode = messages.StringField(3, required=False)
     id = messages.StringField(4, required=False)
 
+class CompleteStartedEventMessage(messages.Message):
+    startedEvent = messages.MessageField(message_type=StartedEventMessage, repeated=False, number=1)
+    endTime = messages.StringField(2, required=True)
+
 class CheckStartedEventMessage(messages.Message):
     startedEvent = messages.MessageField(message_type=StartedEventMessage, required=False, number=1)
 
@@ -283,6 +287,27 @@ class StartedEventService(remote.Service):
     def delete(self, request):
         Key(urlsafe = request.id).delete()
         return request
+
+
+    def transformStartedEventToEvent(self, startedEventMessage, endTime):
+        self.delete(startedEventMessage)
+        event = Event(
+                actor = users.get_current_user(),
+                activityCode = (startedEventMessage.activityCode),
+                #comment = (startedEventMessage.comment),
+                startTime = parseMsgTime(startedEventMessage.startTime), endTime = parseMsgTime(endTime),
+                value = startedEventMessage.eventValue)
+        event.put()
+        return eventToMessage(event)
+
+    @remote.method(CompleteStartedEventMessage, EventMessage)
+    def complete(self, request):
+        return ndb.transaction(lambda : self.transformStartedEventToEvent(request.startedEvent, request.endTime), xg=True)
+
+
+
+
+
 
 app = service.service_mappings(
     [('/service/event', EventService),

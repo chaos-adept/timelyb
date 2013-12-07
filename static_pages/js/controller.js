@@ -52,7 +52,7 @@
             }
             currentActivity = AppState.findActivity(code);
 
-            var startedEvent = new StartedEvent({activityCode:code, eventValue: currentActivity.defaultEventValue, startTime:moment()});
+            var startedEvent = new StartedEvent({activityCode:code, eventValue: currentActivity.defaultEventValue, startTime:moment(new Date().toISOString())});
             console.debug("name: " + code );
 
             startedEvent.save(undefined, {success:function(startedEvent){
@@ -66,7 +66,7 @@
             return true;
 
             function showStartedEvent() {
-                setWindowTitle("'" + code + "', since " + AppState.startedEvent.startTime.format("HH:mm"));
+                setWindowTitle("'" + code + "', since " + (AppState.startedEvent.startTime).format("HH:mm"));
                 Views.logEvent.render();
             }
         },

@@ -53,7 +53,7 @@ function requestStartedEvent(successHandler, errorHandler) {
                 data: JSON.stringify({
                 }),
                 success: function (data) {
-                    var startedEvent = data.startedEvent
+                    var startedEvent = data.startedEvent;
                     if (startedEvent) {
                         startedEvent.startTime = moment(startedEvent.startTime);
                         var d = new Date();
@@ -185,6 +185,35 @@ function sendCheckIn(requestParamObj, successHandler, errorHandler) {
             }
         });
 
+}
+
+function completeStartedEvent(paramsArgs, successHandler, errorHandler) {
+    notifyRequestStarted();
+
+        $.ajax({
+            url: "/service/startedEvents.complete",
+            contentType: 'application/json; charset=utf-8',
+            type: "POST",
+            dataType: 'json',
+            data: JSON.stringify({
+                startedEvent: {
+                    id:paramsArgs.startedEvent.get('id'),
+                    startTime : paramsArgs.startedEvent.get('startTime').toISOString(),
+                    eventValue : paramsArgs.startedEvent.get('eventValue'),
+                    activityCode : paramsArgs.startedEvent.get('activityCode')
+                },
+                endTime: paramsArgs.endTime.toISOString()
+            }),
+            success: function (data) {
+                notifyRequestCompleted();
+                successHandler(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                notifyRequestCompleted();
+                alert(textStatus + ", " + errorThrown + ' , ' + responseText );
+                errorHandler( textStatus + errorThrown)
+            }
+        });
 }
 
 

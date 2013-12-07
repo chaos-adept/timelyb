@@ -13,13 +13,10 @@
             var that = this;
             var value = $(this.el).find("input[name='value']").val();
 
-            var activity = AppState.findActivity(AppState.startedEvent.get('activityCode'));
-
-            sendCheckIn(
-                    {activity: activity,
-                    value: value,
-                    startDate: AppState.startedEvent.get('startTime'),
-                    endDate: new Date()}, //todo it should be momentum time
+            AppState.startedEvent.eventValue = value;
+            completeStartedEvent(
+                {startedEvent: AppState.startedEvent,
+                 endTime: new Date()},
             function (){
                 AppState.startedEvent = null;
                 AppState.justSubmitedEvent = true;
@@ -32,6 +29,7 @@
         cancel: function () {
             AppState.startedEvent.destroy();
             AppState.startedEvent = null;
+            AppState.justSubmitedEvent = true;
             navigateToActivityPage();
         },
         render: function () {
