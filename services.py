@@ -77,7 +77,10 @@ class CheckStartedEventMessage(messages.Message):
     startedEvent = messages.MessageField(message_type=StartedEventMessage, required=False, number=1)
 
 def parseMsgTime(time):
-    return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
+    if time[-1] == 'Z':
+        return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%fZ" )
+    else:
+        return datetime.datetime.strptime( time, "%Y-%m-%dT%H:%M:%S.%f" )
 
 def activityToMessage(activity):
     return ActivityItemMessage(id = activity.key.urlsafe(), defaultEventValue = activity.defaultEventValue, code = activity.code, name = activity.name, tags = activity.tags, thumbUrl = activity.thumbUrl)

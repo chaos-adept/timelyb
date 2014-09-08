@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Time Lyb Tracker</title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="css/app.css">
+
+
+    <script src='lib/underscore/lodash.underscore.min.js'></script>
+    <script src='lib/moment/moment.js'></script>
+
+
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular-timer/angular-timer.js"></script>
+    <script src="script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body ng-app="timeLybApp">
+<div ng-controller="FetchController" class="container">
+
+    <div class="row" ng-if="startedEvent">
+        <div class="page-header">
+          <h1>{{startedEvent.activityCode}} <small>
+              <timer start-time="startedEvent.startTime" interval="1000">{{hhours}}:{{mminutes}}:{{sseconds}}</timer> /
+          {{startedEvent.startTime | date: 'HH:mm:ss Z'}}
+          </small></h1>
+            <form class="form-inline" role="form">
+              <div class="form-group">
+              </div>
+
+
+
+              <button ng-click="completeEvent()" type="submit" class="btn btn-default">Check In</button>
+              <button ng-click="cancelEvent()" type="submit" class="btn">Cancel</button>
+            </form>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <h3>Activities</h3>
+
+
+        <div class="list-group">
+          <a ng-click="startActivity(activity)" class="list-group-item" ng-repeat="activity in activities">
+            <span class="badge" ng-repeat="tag in activity.tags">{{tag}}</span>
+            {{activity.code}} : {{activity.name}}
+          </a>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="loading-icon-small" ng-if="isLoading"></div>
+        </div>
+    </div>
+
+    <div class="row ">
+    </div>
+
+</div>
+
+</body>
+</html>

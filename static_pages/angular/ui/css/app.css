@@ -1,0 +1,203 @@
+/* app css stylesheet */
+
+body {
+  padding-top: 20px;
+}
+
+.rnd-search-facets {
+    border:2px solid;
+    border-radius:5px;
+    border-style: dotted;
+    border-color: #F7F5FD;
+}
+
+.rnd-search-results {
+    border:2px solid;
+    border-radius:5px;
+    border-style: dotted;
+    border-color: #F7F5FD;
+}
+
+.rnd-search-results-entity {
+    border:2px solid;
+    border-radius:5px;
+    border-style: dotted;
+    border-color: #e1e1e1;
+}
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+.unknowTypeNode {
+    fill: rgba(0, 142, 152, 0.13);
+}
+
+.entities {
+    background-color: rgba(0, 240, 38, 0.70);
+    fill: rgba(0, 240, 38, 0.70);
+}
+
+.articles {
+    background-color: rgba(254, 182, 50, 0.70);
+    fill: rgba(254, 182, 50, 0.70);
+}
+
+.journals {
+    background-color: rgba(202, 120, 254, 0.70);
+    fill: rgba(202, 120, 254, 0.70);
+}
+
+.icon-inactive {
+    background-color: rgba(0, 0, 0, 0.21);
+    fill: rgba(0, 0, 0, 0.21);
+}
+
+.taxonomies {
+    background-color: rgba(88, 147, 254, 0.70);
+    fill: rgba(88, 147, 254, 0.70);
+}
+
+.taxonomiesNodes {
+    background-color: rgba(97, 219, 254, 0.70);
+    fill: rgba(97, 219, 254, 0.70);
+}
+
+.taxonomyConfigurations {
+    background-color: rgba(100, 100, 0, 0.70);
+    fill: rgba(100, 100, 0, 0.70);;
+}
+
+.nodes {
+    background-color: rgba(88, 147, 254, 0.70);
+    fill: rgba(88, 147, 254, 0.70)
+}
+
+.ontologies {
+    background-color: rgba(100, 104, 198, 0.70);
+    fill: rgba(100, 104, 198, 0.70);
+}
+
+.articleDoi {
+    color: rgba(227, 227, 255, 0.49);
+}
+
+g circle {
+    cursor: pointer;
+}
+
+g.current circle {
+    stroke: rgba(100, 0, 0, 0.70);
+    stroke-width: 2px;
+}
+
+g.onPathToRoot circle {
+    stroke: rgba(0, 0, 100, 0.70);
+    stroke-width: 2px;
+}
+
+g path {
+    cursor: pointer;
+}
+
+g.current path {
+    stroke: rgba(100, 0, 0, 0.70);
+    stroke-width: 2px;
+}
+
+g.onPathToRoot path {
+    stroke: rgba(0, 0, 100, 0.70);
+    stroke-width: 2px;
+}
+
+.verticalLine {
+    border-bottom: dotted #fdf6fb;
+}
+
+.ksItemsList {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0.3em;
+}
+
+.ksItemsList > li {
+    margin-bottom: 0.3em;
+}
+
+.entityTypeList {
+    list-style-type: none;
+    font: 16px sans-serif;
+}
+
+
+.treeItem {
+   margin-left: 20px;
+}
+
+.link {
+    stroke: rgba(114, 114, 114, 0.5);
+    stroke-width: 3px;
+}
+
+.link.current {
+    stroke: rgba(114, 0, 114, 0.5);
+}
+
+.node text {
+    pointer-events: none;
+    font: 10px sans-serif;
+}
+
+.journalPubDateSlider {
+}
+
+.journalPubDateSlider > div {
+    /*margin: 1em 0;*/
+}
+
+.inlineHint {
+    color: lightgrey;
+}
+
+.ksPropertyLabel {
+    color: #aeaeae;
+}
+
+.cursorPoint {
+    cursor: pointer;
+}
+
+.loading-icon-small {
+
+    background-image: url("../img/icon_loading_75x75.gif");
+    background-repeat: no-repeat;
+    background-size:16px 16px;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+
+.blink {
+    animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+
+.versionLabels {
+    color: black;
+}
+
+.entityRelationSelected {
+  background-color: #1ffad8;
+}
+
+#contextMenu {
+    position: absolute;
+    display:none;
+}
+
+.angular-google-map-container { height: 400px; }
