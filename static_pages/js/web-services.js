@@ -144,7 +144,7 @@ function requestEvents(successHandler) {
                         }
 
                     });
-                    events.sort(sortEvents);
+                    //events.sort(sortEvents);
 
                     successHandler(events);
 
